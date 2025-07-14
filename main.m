@@ -5,7 +5,7 @@ path_to_urdf = 'ur10e.urdf';
 
 
 % Generate functions for dynamics based on Lagrange method
-% Note that it might take some time
+% Note that it might take some timesqlpdemo
 % generate_rb_dynamics(path_to_urdf);
 generate_friction_eq();
 
@@ -43,6 +43,20 @@ sol = estimate_dynamic_params(path_to_est_data, idxs, ...
                           
 % Validate estimated parameters
 path_to_val_data = 'ur-20_01_17-ptp_10_points.csv';     idxs = [700, 4200];
+
+if any(isnan(path_to_val_data))
+    error('path_to_val_data is NaN.');
+elseif any(isnan(idxs))
+    error('idxs is NaN.');
+elseif any(isnan(drive_gains))
+    error('drive_gains is NaN.');
+elseif any(isempty(baseQR))
+    error('baseQR is NaN.');
+elseif any(isnan(sol.pi_b))
+    error('sol.pi_b is NaN.');
+elseif any(isnan(sol.pi_fr))
+    error('sol.pi_fr is NaN.');
+end
 
 rre = validate_dynamic_params(path_to_val_data, idxs, ...
                               drive_gains, baseQR, sol.pi_b, sol.pi_fr)

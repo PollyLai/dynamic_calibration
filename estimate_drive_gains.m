@@ -167,6 +167,7 @@ elseif strcmp(method, 'PC-OLS')
     % Solving sdp problem
     sol = optimize(cnstr,obj,sdpsettings('solver','sdpt3'));
 
+    
     % Getting values of the estimated patamters
     drvGains = value(drv_gns);
 else

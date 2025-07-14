@@ -37,6 +37,9 @@ idntfcnTrjctry = filterData(idntfcnTrjctry);
 % ------------------------------------------------------------------------
 [Tau, Wb] = buildObservationMatrices(idntfcnTrjctry, baseQR, drvGains);
 
+if any(isnan(Tau(:))) || any(isnan(Wb(:)))
+    error('Tau or Wb contains NaN values before optimization.');
+end
 % ---------------------------------------------------------------------
 % Estimate parameters
 % ---------------------------------------------------------------------
@@ -57,11 +60,16 @@ end
 % unbiased estimation of the standard deviation
 sqrd_sgma_e = norm(Tau - Wb*[sol.pi_b; sol.pi_fr], 2)^2/...
                 (size(Wb, 1) - size(Wb, 2));
-            
+   
 % the covariance matrix of the estimation error
 Cpi = sqrd_sgma_e*inv(Wb'*Wb);
 sol.std = sqrt(diag(Cpi));
 
+if any(isnan(sqrd_sgma_e))
+    error("sqrd_sgma_e is NaN");
+elseif any(isnan(Cpi))
+    error("Cpi is NaN");
+end
 % relative standard deviation
 sol.rel_std = 100*sol.std./abs([sol.pi_b; sol.pi_fr]);
 end
