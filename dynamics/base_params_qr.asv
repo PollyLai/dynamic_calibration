@@ -65,9 +65,9 @@ pi_lgr_sym = reshape(pi_lgr_sym, [nLnkPrms*nLnks, 1]);
 % Get observation matrix of identifiable paramters
 W = [];    
 for i = 1:25
-    q_rnd = q_min + (q_max - q_min).*rand(DOF,1);
-    qd_rnd = -qd_max + 2*qd_max.*rand(DOF,1);
-    q2d_rnd = -q2d_max + 2*q2d_max.*rand(DOF,1);
+    q_rnd = q_min + (q_max - q_min).*rand(6,1);
+    qd_rnd = -qd_max + 2*qd_max.*rand(6,1);
+    q2d_rnd = -q2d_max + 2*q2d_max.*rand(6,1);
     
     if includeMotorDynamics
         Y = regressorWithMotorDynamics(q_rnd,qd_rnd,q2d_rnd);

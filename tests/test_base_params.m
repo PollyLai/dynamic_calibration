@@ -1,4 +1,4 @@
-function test_base_params()
+function test_base_params(DOF)
 % ---------------------------------------------------------------------
 % Test if base parameters are found correctly by comparing
 % torque prediction of the model with standard parameters with 
@@ -11,7 +11,7 @@ no_links = 6;
 
 % Perform QR decompostions
 include_motor_dynamics = 1;
-[~, baseQR] = base_params_qr(include_motor_dynamics);
+[~, baseQR] = base_params_qr(include_motor_dynamics, DOF);
 
 bb = baseQR.numberOfBaseParameters;
 E = baseQR.permutationMatrix;

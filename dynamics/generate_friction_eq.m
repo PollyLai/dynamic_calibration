@@ -1,16 +1,16 @@
-function generate_friction_eq()
+function generate_friction_eq(DOF)
 
 % Create symbolic generilized coordiates, their first and second deriatives
-qd_sym = sym('qd%d',[6,1],'real');
+qd_sym = sym('qd%d',[DOF,1],'real');
 
 % Create symbolic experssions for friction parameters
-pi_frcn = sym('pi_frcn_%d%d', [18,1], 'real');
+pi_frcn = sym('pi_frcn_%d%d', [DOF*3,1], 'real');
 arrayfun(@char, qd_sym, 'UniformOutput', false)
 arrayfun(@char, pi_frcn, 'UniformOutput', false)
 
 
 % Friction torque
-pi_frcn_tmp = reshape(pi_frcn, [3, 6])';
+pi_frcn_tmp = reshape(pi_frcn, [3, DOF])';
 tau_frcn = pi_frcn_tmp(:,1).*qd_sym + pi_frcn_tmp(:,2).*sign(qd_sym) + pi_frcn_tmp(:,3);
 
 

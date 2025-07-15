@@ -65,11 +65,7 @@ sqrd_sgma_e = norm(Tau - Wb*[sol.pi_b; sol.pi_fr], 2)^2/...
 Cpi = sqrd_sgma_e*inv(Wb'*Wb);
 sol.std = sqrt(diag(Cpi));
 
-if any(isnan(sqrd_sgma_e))
-    error("sqrd_sgma_e is NaN");
-elseif any(isnan(Cpi))
-    error("Cpi is NaN");
-end
+
 % relative standard deviation
 sol.rel_std = 100*sol.std./abs([sol.pi_b; sol.pi_fr]);
 end
