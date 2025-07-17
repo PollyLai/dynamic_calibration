@@ -4,7 +4,7 @@ utils/SDPT3-4.0/
 
 # Outputs of the code generator
 autogen/codegen/
-
+autogen/
 # Autosave Matlab Files
 *.m~
 

@@ -1,4 +1,4 @@
-function sol = estimate_dynamic_params(path_to_data, idx, drvGains, baseQR, method)
+function sol = estimate_dynamic_params(path_to_data, idx, drvGains, baseQR, method, DOF)
 % -----------------------------------------------------------------------
 % In this script identification of inertial parameters of the UR10E
 % is carried out. Two approaches are implemented: ordinary least squares

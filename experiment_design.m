@@ -13,8 +13,8 @@
 % ---------------------------------------------------------------------
 % get robot description
 path_to_urdf = 'ur10e.urdf';
-ur10 = parse_urdf(path_to_urdf);
 DOF = 6;    % Polly
+ur10 = parse_urdf(path_to_urdf, DOF);
 % get mapping from full parameters to base parameters
 include_motor_dynamics = 1;
 [~, baseQR] = base_params_qr(include_motor_dynamics, DOF);

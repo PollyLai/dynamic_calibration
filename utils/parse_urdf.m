@@ -1,12 +1,11 @@
-function robot = parse_urdf(file)
+function robot = parse_urdf(file, DOF)
 % Loading file from urdf
 % The function is tailored for UR robots: serial robots with 6 DOF
 % Modify it if you have  a robot with different degrees of freedom
 robot = xml2struct(file);
-no_dof = 6;
 
 % Extracting parameters of the robot
-for i = 1:no_dof
+for i = 1:DOF
     % axis of rotation of a joint i in coordinate system of joint i    
     axis_of_rot = str2num(robot.robot.joint{i}.axis.Attributes.xyz)';
     % mass of link (i+1) because joint i rotates link (i+1) as the numbering of

@@ -1,4 +1,4 @@
-function drvGains = estimate_drive_gains(baseQR, method)
+function drvGains = estimate_drive_gains(baseQR, method, DOF)
 % ------------------------------------------------------------------------
 % The function estimates drive gains for the UR10E robot. 
 % To do that several methods were used: total least squares approach; 
