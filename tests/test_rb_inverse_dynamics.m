@@ -1,7 +1,7 @@
-function test_rb_inverse_dynamics(DOF)
+function test_rb_inverse_dynamics(n_links)
 
 path_to_urdf = 'ur10e.urdf';
-ur10 = parse_urdf(path_to_urdf, DOF);
+ur10 = parse_urdf(path_to_urdf, n_links);
 
 rbt = importrobot('ur10e.urdf');
 rbt.DataFormat = 'column';

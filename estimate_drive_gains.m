@@ -1,4 +1,4 @@
-function drvGains = estimate_drive_gains(baseQR, method, DOF)
+function drvGains = estimate_drive_gains(baseQR, method, n_links)
 % ------------------------------------------------------------------------
 % The function estimates drive gains for the UR10E robot. 
 % To do that several methods were used: total least squares approach; 
@@ -26,10 +26,10 @@ path_to_loaded_traj = 'ur-20_02_19_14harm50secLoad.csv';
 % Nonetheless, during validation they provide the more or less the same
 % result. So, any unloaded trajectory from the given list can be chosen
 % ------------------------------------------------------------------------
-unloadedTrajectory = parseURData(path_to_unloaded_traj, 195, 4966);
+unloadedTrajectory = parseURData(path_to_unloaded_traj, 1, 390);
 unloadedTrajectory = filterData(unloadedTrajectory);
 
-loadedTrajectory = parseURData(path_to_loaded_traj, 308, 5071);
+loadedTrajectory = parseURData(path_to_loaded_traj, 1, 390);
 loadedTrajectory = filterData(loadedTrajectory);
 
 % ------------------------------------------------------------------------

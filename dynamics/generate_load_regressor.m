@@ -1,10 +1,10 @@
-function generate_load_regressor(path_to_urdf, DOF)
+function generate_load_regressor(path_to_urdf, n_links)
 % ----------------------------------------------------------------------
 % The function generates regressor for the load, which is assumed to be
 % a rigid body
 % -----------------------------------------------------------------------
 % Parse urdf to get robot description
-ur10 = parse_urdf(path_to_urdf, DOF);
+ur10 = parse_urdf(path_to_urdf, n_links);
 
 % Create symbolic generilized coordiates, their first and second deriatives
 q_sym = sym('q%d',[6,1],'real');

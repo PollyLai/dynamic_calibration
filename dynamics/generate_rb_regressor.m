@@ -1,4 +1,4 @@
-function generate_rb_regressor(path_to_urdf, DOF)
+function generate_rb_regressor(path_to_urdf, n_links)
 % ---------------------------------------------------------------------
 % The function generates regressor for UR10E. It assumes that links of
 % the robot are rigid bodies. Thus the inverse dynamics can be written
@@ -6,7 +6,7 @@ function generate_rb_regressor(path_to_urdf, DOF)
 % ---------------------------------------------------------------------
 
 % Parse urdf to get robot description
-ur10 = parse_urdf(path_to_urdf, DOF);
+ur10 = parse_urdf(path_to_urdf, n_links);
 
 % Create symbolic generilized coordiates, their first and second deriatives
 q_sym = sym('q%d',[6,1],'real');

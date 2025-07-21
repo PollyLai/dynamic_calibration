@@ -1,11 +1,11 @@
-function generate_rb_dynamics(path_to_urdf, DOF)
+function generate_rb_dynamics(path_to_urdf, n_links)
 % ----------------------------------------------------------------------
 % Function generates rigid body dynamics equations, namely M, C matrices
 % and g vector: M(q) ddq + C(q, dq) dq + g(q) = tau
 % ----------------------------------------------------------------------
 
 % Parse urdf to get robot description
-ur10 = parse_urdf(path_to_urdf, DOF);
+ur10 = parse_urdf(path_to_urdf, n_links);
 
 % Create symbolic generilized coordiates, their first and second deriatives
 q_sym = sym('q%d',[6,1],'real');

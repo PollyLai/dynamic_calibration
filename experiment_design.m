@@ -13,11 +13,11 @@
 % ---------------------------------------------------------------------
 % get robot description
 path_to_urdf = 'ur10e.urdf';
-DOF = 6;    % Polly
-ur10 = parse_urdf(path_to_urdf, DOF);
+n_links = 6;    % Polly
+ur10 = parse_urdf(path_to_urdf, n_links);
 % get mapping from full parameters to base parameters
 include_motor_dynamics = 1;
-[~, baseQR] = base_params_qr(include_motor_dynamics, DOF);
+[~, baseQR] = base_params_qr(include_motor_dynamics, n_links);
 
 % Choose optimization algorithm: 'patternsearch', 'ga'
 optmznAlgorithm = 'patternsearch';
@@ -32,19 +32,19 @@ traj_par.q0 = deg2rad([0 -90 0 -90 0 0 ]');
 % Use different limit for positions for safety
 traj_par.q_min = -deg2rad([180  180  100   180  90   90]');
 traj_par.q_max =  deg2rad([180  0    100   0    90   90]');
-qd_max = 3*pi*ones(DOF,1);
+qd_max = 3*pi*ones(n_links,1);
 traj_par.qd_max = qd_max;
 traj_par.q2d_max = [2 1 1 1 1 2.5]';
 
 %  ----------------------------------------------------------------------
 % Otimization
-% -----------------------------------------------------------------------
+%  ----------------------------------------------------------------------
 A = []; b = [];
 Aeq = []; beq = [];
 lb = []; ub = [];
 
 if strcmp(optmznAlgorithm, 'patternsearch')
-    x0 = rand(DOF*2*traj_par.N,1);
+    x0 = rand(n_links*2*traj_par.N,1);
     optns_pttrnSrch = optimoptions('patternsearch');
     optns_pttrnSrch.Display = 'iter';
     optns_pttrnSrch.StepTolerance = 1e-1;
@@ -65,7 +65,7 @@ elseif strcmp(optmznAlgorithm, 'ga')
     optns_ga.InitialPopulationRange = [-100; 100];
     optns_ga.SelectionFcn = 'selectionroulette';
 
-    [x,fval] = ga(@(x)traj_cost_lgr(x,traj_par,baseQR), DOF*2*traj_par.N,...
+    [x,fval] = ga(@(x)traj_cost_lgr(x,traj_par,baseQR), n_links*2*traj_par.N,...
                   A, b, Aeq, beq, lb, ub, ...
                   @(x)traj_cnstr(x,traj_par), optns_ga);
 else
@@ -113,3 +113,4 @@ elseif strcmp(optmznAlgorithm, 'fmincon')
 end
 save(filename,'a','b','c_pol','traj_par')
 %}
+

@@ -1,4 +1,4 @@
-function [pi_lgr_base, baseQR] = base_params_qr(includeMotorDynamics, DOF)
+function [pi_lgr_base, baseQR] = base_params_qr(includeMotorDynamics, n_links)
 % ----------------------------------------------------------------------
 % In this function QR decomposition is applied to regressor in closed
 % form obtained from Lagrange formulation of dynamics.
@@ -22,31 +22,31 @@ rng('shuffle');
 % ------------------------------------------------------------------------
 % Set limits on posistion and velocities
 % ------------------------------------------------------------------------
-q_min = -pi*ones(DOF,1);
-q_max = pi*ones(DOF,1);
-qd_max = 3*pi*ones(DOF,1);
-q2d_max = 6*pi*ones(DOF,1); 
+q_min = -pi*ones(n_links,1);
+q_max = pi*ones(n_links,1);
+qd_max = 3*pi*ones(n_links,1);
+q2d_max = 6*pi*ones(n_links,1); 
 
 % -----------------------------------------------------------------------
 % Standard dynamics paramters of the robot in symbolic form
 % -----------------------------------------------------------------------
-m = sym('m%d',[DOF,1],'real');
-hx = sym('h%d_x',[DOF,1],'real');
-hy = sym('h%d_y',[DOF,1],'real');
-hz = sym('h%d_z',[DOF,1],'real');
-ixx = sym('i%d_xx',[DOF,1],'real');
-ixy = sym('i%d_xy',[DOF,1],'real');
-ixz = sym('i%d_xz',[DOF,1],'real');
-iyy = sym('i%d_yy',[DOF,1],'real');
-iyz = sym('i%d_yz',[DOF,1],'real');
-izz = sym('i%d_zz',[DOF,1],'real');
-im = sym('im%d',[DOF,1],'real');
+m = sym('m%d',[n_links,1],'real');
+hx = sym('h%d_x',[n_links,1],'real');
+hy = sym('h%d_y',[n_links,1],'real');
+hz = sym('h%d_z',[n_links,1],'real');
+ixx = sym('i%d_xx',[n_links,1],'real');
+ixy = sym('i%d_xy',[n_links,1],'real');
+ixz = sym('i%d_xz',[n_links,1],'real');
+iyy = sym('i%d_yy',[n_links,1],'real');
+iyz = sym('i%d_yz',[n_links,1],'real');
+izz = sym('i%d_zz',[n_links,1],'real');
+im = sym('im%d',[n_links,1],'real');
 
 % Load parameters attached to the end-effector
 syms ml hl_x hl_y hl_z il_xx il_xy il_xz il_yy il_yz il_zz      real 
 
 % Vector of symbolic parameters
-for i = 1:DOF
+for i = 1:n_links
     if includeMotorDynamics
         pi_lgr_sym(:,i) = [ixx(i),ixy(i),ixz(i),iyy(i),iyz(i),izz(i),...
                            hx(i),hy(i),hz(i),m(i),im(i)]';
@@ -65,9 +65,9 @@ pi_lgr_sym = reshape(pi_lgr_sym, [nLnkPrms*nLnks, 1]);
 % Get observation matrix of identifiable paramters
 W = [];    
 for i = 1:25
-    q_rnd = q_min + (q_max - q_min).*rand(DOF,1);
-    qd_rnd = -qd_max + 2*qd_max.*rand(DOF,1);
-    q2d_rnd = -q2d_max + 2*q2d_max.*rand(DOF,1);
+    q_rnd = q_min + (q_max - q_min).*rand(n_links,1);
+    qd_rnd = -qd_max + 2*qd_max.*rand(n_links,1);
+    q2d_rnd = -q2d_max + 2*q2d_max.*rand(n_links,1);
     
     if includeMotorDynamics
         Y = regressorWithMotorDynamics(q_rnd,qd_rnd,q2d_rnd);

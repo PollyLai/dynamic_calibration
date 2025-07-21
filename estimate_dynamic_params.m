@@ -1,4 +1,4 @@
-function sol = estimate_dynamic_params(path_to_data, idx, drvGains, baseQR, method, DOF)
+function sol = estimate_dynamic_params(path_to_data, idx, drvGains, baseQR, method, n_links)
 % -----------------------------------------------------------------------
 % In this script identification of inertial parameters of the UR10E
 % is carried out. Two approaches are implemented: ordinary least squares
@@ -85,6 +85,7 @@ function [Tau, Wb] = buildObservationMatrices(idntfcnTrjctry, baseQR, drvGains)
         Ybi = [Yi*E1, Yfrctni];
 
         Wb = vertcat(Wb, Ybi);
+        % Tau = vertcat(Tau, diag(drvGains)*idntfcnTrjctry.i_fltrd(i,:)');
         Tau = vertcat(Tau, diag(drvGains)*idntfcnTrjctry.i_fltrd(i,:)');
     end
 end
