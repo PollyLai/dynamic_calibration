@@ -35,7 +35,7 @@ idntfcnTrjctry = filterData(idntfcnTrjctry);
 % -------------------------------------------------------------------
 % Generate Regressors based on data
 % ------------------------------------------------------------------------
-[Tau, Wb] = buildObservationMatrices(idntfcnTrjctry, baseQR, drvGains);
+[Tau, Wb] = buildObservationMatrices(idntfcnTrjctry, baseQR, drvGains, n_links);
 
 if any(isnan(Tau(:))) || any(isnan(Wb(:)))
     error('Tau or Wb contains NaN values before optimization.');
@@ -72,7 +72,7 @@ end
 
 
 % Local unctions
-function [Tau, Wb] = buildObservationMatrices(idntfcnTrjctry, baseQR, drvGains)
+function [Tau, Wb] = buildObservationMatrices(idntfcnTrjctry, baseQR, drvGains, n_links)
     % The function builds observation matrix for UR10E
     E1 = baseQR.permutationMatrix(:,1:baseQR.numberOfBaseParameters);
 
@@ -80,7 +80,7 @@ function [Tau, Wb] = buildObservationMatrices(idntfcnTrjctry, baseQR, drvGains)
     for i = 1:1:length(idntfcnTrjctry.t)
          Yi = regressorWithMotorDynamics(idntfcnTrjctry.q(i,:)',...
                                          idntfcnTrjctry.qd_fltrd(i,:)',...
-                                         idntfcnTrjctry.q2d_est(i,:)');
+                                         idntfcnTrjctry.q2d_est(i,:)', n_links);
         Yfrctni = frictionRegressor(idntfcnTrjctry.qd_fltrd(i,:)');
         Ybi = [Yi*E1, Yfrctni];
 

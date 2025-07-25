@@ -1,3 +1,4 @@
+clear all; close all; clc;
 % ---------------------------------------------------------------------
 % In this script trajectory optimization otherwise called experiment
 % design for dynamic paramters identification is carried out. 
@@ -12,8 +13,10 @@
 % parameters into a file.
 % ---------------------------------------------------------------------
 % get robot description
+% path_to_urdf = 'fixed_bipedal.urdf';
+% n_links = 10;    
 path_to_urdf = 'ur10e.urdf';
-n_links = 6;    % Polly
+n_links = 6;    
 ur10 = parse_urdf(path_to_urdf, n_links);
 % get mapping from full parameters to base parameters
 include_motor_dynamics = 1;
@@ -78,8 +81,8 @@ end
 ab = reshape(x,[12,traj_par.N]);
 a = ab(1:6,:); % sin coeffs
 b = ab(7:12,:); % cos coeffs
-c_pol = getPolCoeffs(traj_par.T, a, b, traj_par.wf, traj_par.N, traj_par.q0);
-[q,qd,q2d] = mixed_traj(traj_par.t, c_pol, a, b, traj_par.wf, traj_par.N);
+c_pol = getPolCoeffs(traj_par.T, a, b, traj_par.wf, traj_par.N, traj_par.q0, n_links);
+[q,qd,q2d] = mixed_traj(traj_par.t, c_pol, a, b, traj_par.wf, traj_par.N, n_links);
 
 figure
 subplot(3,1,1)

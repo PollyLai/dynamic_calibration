@@ -9,14 +9,14 @@ rbt.Gravity = [0 0 -9.81];
 
 no_iter = 100;
 for i = 1:no_iter
-    q = -2*pi + 4*pi*rand(6,1);
-    q_d = zeros(6,1);
-    q_2d = zeros(6,1);
+    q = -2*pi + 4*pi*rand(n_links,1);
+    q_d = zeros(n_links,1);
+    q_2d = zeros(n_links,1);
 
     Ylgr = standard_regressor_UR10E(q,q_d,q_2d);
 
     tau_matlab = inverseDynamics(rbt,q,q_d,q_2d);
-    tau_reg = Ylgr*reshape(ur10.pi,[60,1]);
+    tau_reg = Ylgr*reshape(ur10.pi,[n_links*10,1]);
     tau_manip = M_mtrx_fcn(q, ur10.pi(:))*q_2d + ...
                 C_mtrx_fcn(q, q_d, ur10.pi(:))*q_d + ...
                 G_vctr_fcn(q, ur10.pi(:));

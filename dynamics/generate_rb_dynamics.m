@@ -21,7 +21,7 @@ v_kk(:,1) = sym(zeros(3,1)); % linear velocity of the origin of frame k in frame
 g_kk(:,1) = sym([0,0,9.81])'; % vector of graviatational accelerations in frame k
 p_kk(:,1) = sym(zeros(3,1)); % origin of frame k in frame k
 
-for i = 1:6
+for i = 1:n_links
     jnt_axs_k = str2num(ur10.robot.joint{i}.axis.Attributes.xyz)';
     % Transformation from parent link frame p to current joint frame
     rpy_k = sym(str2num(ur10.robot.joint{i}.origin.Attributes.rpy));

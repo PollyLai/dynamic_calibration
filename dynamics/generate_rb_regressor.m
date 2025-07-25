@@ -9,20 +9,20 @@ function generate_rb_regressor(path_to_urdf, n_links)
 ur10 = parse_urdf(path_to_urdf, n_links);
 
 % Create symbolic generilized coordiates, their first and second deriatives
-q_sym = sym('q%d',[6,1],'real');
-qd_sym = sym('qd%d',[6,1],'real');
-q2d_sym = sym('q2d%d',[6,1],'real');
+q_sym = sym('q%d',[n_links,1],'real');
+qd_sym = sym('qd%d',[n_links,1],'real');
+q2d_sym = sym('q2d%d',[n_links,1],'real');
 
 % ------------------------------------------------------------------------
 % Getting gradient of energy functions, to derive dynamics
 % ------------------------------------------------------------------------
-T_pk = sym(zeros(4,4,6)); % transformation between links
+T_pk = sym(zeros(4,4,n_links)); % transformation between links
 w_kk(:,1) = sym(zeros(3,1)); % angular velocity k in frame k
 v_kk(:,1) = sym(zeros(3,1)); % linear velocity of the origin of frame k in frame k
 g_kk(:,1) = sym([0,0,9.81])'; % vector of graviatational accelerations in frame k
 p_kk(:,1) = sym(zeros(3,1)); % origin of frame k in frame k
 
-for i = 1:6
+for i = 1:n_links
     jnt_axs_k = str2num(ur10.robot.joint{i}.axis.Attributes.xyz)';
     % Transformation from parent link frame p to current joint frame
     rpy_k = sym(str2num(ur10.robot.joint{i}.origin.Attributes.rpy));
@@ -55,15 +55,22 @@ end
 % ---------------------------------------------------------------------
 % Dynamic regressor of the full paramters
 % ---------------------------------------------------------------------
-beta_Lf = [beta_K(1,:) - beta_P(1,:), beta_K(2,:) - beta_P(2,:),...
-         beta_K(3,:) - beta_P(3,:), beta_K(4,:) - beta_P(4,:),...
-         beta_K(5,:) - beta_P(5,:), beta_K(6,:) - beta_P(6,:)];
+beta_Lf = [];
+for k = 1:n_links
+    beta_Lf = [beta_Lf , beta_K(k,:) - beta_P(k,:)];
+end
+
+% beta_Lf = [beta_K(1,:) - beta_P(1,:), beta_K(2,:) - beta_P(2,:),...
+%          beta_K(3,:) - beta_P(3,:), beta_K(4,:) - beta_P(4,:),...
+%          beta_K(5,:) - beta_P(5,:), beta_K(6,:) - beta_P(6,:)];
+
 dbetaLf_dq = jacobian(beta_Lf,q_sym)';
 dbetaLf_dqd = jacobian(beta_Lf,qd_sym)';
-tf = sym(zeros(6,60));
-for i = 1:6
-   tf = tf + diff(dbetaLf_dqd,q_sym(i))*qd_sym(i)+...
-                diff(dbetaLf_dqd,qd_sym(i))*q2d_sym(i);
+n_cols  = size(dbetaLf_dqd, 2);
+tf = sym(zeros(n_links, n_cols));
+for i = 1:n_links
+   tf = tf + diff(dbetaLf_dqd, q_sym(i)) * qd_sym(i)+...
+             diff(dbetaLf_dqd, qd_sym(i)) * q2d_sym(i);
 end
 Y_f = tf - dbetaLf_dq;
 

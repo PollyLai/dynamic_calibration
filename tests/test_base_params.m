@@ -39,7 +39,7 @@ for i = 1:100
     q2d_rnd = -q2d_max + 2*q2d_max.*rand(n_links,1);
     
     if includeMotorDynamics
-        Yi = regressorWithMotorDynamics(q_rnd,qd_rnd,q2d_rnd);
+        Yi = regressorWithMotorDynamics(q_rnd,qd_rnd,q2d_rnd, n_links);
     else
         Yi = standard_regressor_UR10E(q_rnd,qd_rnd,q2d_rnd);
     end

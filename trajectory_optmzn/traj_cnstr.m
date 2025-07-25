@@ -21,10 +21,10 @@ b = ab(7:12,:); % cos coeffs
 % beginning and at time T, we add fifth order polynomial to fourier
 % series. The parameters of the polynomial depends on the parameters of
 % fourier series. Here we compute them.
-c_pol = getPolCoeffs(T, a, b, wf, N, traj_par.q0);   
+c_pol = getPolCoeffs(T, a, b, wf, N, traj_par.q0, n_links);   
 
 % Compute trajectory (Fouruer series + fifth order polynomail)
-[q,qd,q2d] = mixed_traj(t, c_pol, a, b, wf, N);
+[q,qd,q2d] = mixed_traj(t, c_pol, a, b, wf, N, n_links);
 
 % Inequality constraints
 c(1:6) = traj_par.q_min - min(q,[],2); % upper joint limit constraint

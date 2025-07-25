@@ -45,7 +45,8 @@ Wb_uldd = []; I_uldd = [];
 for i = 1:1:length(unloadedTrajectory.t)
     Y_ulddi = regressorWithMotorDynamics(unloadedTrajectory.q(i,:)',...
                                          unloadedTrajectory.qd_fltrd(i,:)',...
-                                         unloadedTrajectory.q2d_est(i,:)');
+                                         unloadedTrajectory.q2d_est(i,:)',...
+                                         n_links);
                                      
     Yfrctni = frictionRegressor(unloadedTrajectory.qd_fltrd(i,:)');
     Ybi_uldd = [Y_ulddi*E1, Yfrctni];
@@ -59,7 +60,8 @@ Wb_ldd = []; Wl = []; I_ldd = [];
 for i = 1:1:length(loadedTrajectory.t)
     Y_lddi = regressorWithMotorDynamics(loadedTrajectory.q(i,:)',...
                                         loadedTrajectory.qd_fltrd(i,:)',...
-                                        loadedTrajectory.q2d_est(i,:)');
+                                        loadedTrajectory.q2d_est(i,:)',...
+                                        n_links);
                                     
     Yfrctni = frictionRegressor(loadedTrajectory.qd_fltrd(i,:)');
     Ybi_ldd = [Y_lddi*E1, Yfrctni];

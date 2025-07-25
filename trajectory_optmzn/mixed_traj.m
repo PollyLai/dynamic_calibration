@@ -1,4 +1,4 @@
-function [q,qd,q2d] = mixed_traj(t,C,A,B,w,N)
+function [q,qd,q2d] = mixed_traj(t,C,A,B,w,N, n_links)
 % ---------------------------------------------------------------------
 % This function computes "mixed trajectory" meaning the trajectory
 % that consistes of finite fourier series and fifth order polynomial
@@ -11,7 +11,7 @@ function [q,qd,q2d] = mixed_traj(t,C,A,B,w,N)
 %   N - number of harmonics
 % ---------------------------------------------------------------------
 % finite fourier series
-[qh,qhd,qh2d] = fourier_series_traj(t,zeros(6,1),A,B,w,N);
+[qh,qhd,qh2d] = fourier_series_traj(t,zeros(n_links,1),A,B,w,N);
 
 % fifth order polynomail trajectory
 qp = C(:,1) + C(:,2).*t + C(:,3).*t.^2 + C(:,4).*t.^3 + ...
