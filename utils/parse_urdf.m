@@ -6,7 +6,6 @@ robot = xml2struct(file);
 
 % Extracting parameters of the robot
 for i = 1:n_links
-    disp( ["parse_urdf: i -> "  num2str(i)] );
     % axis of rotation of a joint i in coordinate system of joint i    
     axis_of_rot = str2num(robot.robot.joint{i}.axis.Attributes.xyz)';
     % mass of link (i+1) because joint i rotates link (i+1) as the numbering of

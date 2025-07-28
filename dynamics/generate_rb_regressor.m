@@ -12,7 +12,6 @@ ur10 = parse_urdf(path_to_urdf, n_links);
 q_sym = sym('q%d',[n_links,1],'real');
 qd_sym = sym('qd%d',[n_links,1],'real');
 q2d_sym = sym('q2d%d',[n_links,1],'real');
-
 % ------------------------------------------------------------------------
 % Getting gradient of energy functions, to derive dynamics
 % ------------------------------------------------------------------------
@@ -59,6 +58,7 @@ beta_Lf = [];
 for k = 1:n_links
     beta_Lf = [beta_Lf , beta_K(k,:) - beta_P(k,:)];
 end
+disp("finish beta_LF");
 
 % beta_Lf = [beta_K(1,:) - beta_P(1,:), beta_K(2,:) - beta_P(2,:),...
 %          beta_K(3,:) - beta_P(3,:), beta_K(4,:) - beta_P(4,:),...
@@ -69,11 +69,31 @@ dbetaLf_dqd = jacobian(beta_Lf,qd_sym)';
 n_cols  = size(dbetaLf_dqd, 2);
 tf = sym(zeros(n_links, n_cols));
 for i = 1:n_links
-   tf = tf + diff(dbetaLf_dqd, q_sym(i)) * qd_sym(i)+...
+    disp(i);
+    tf = tf + diff(dbetaLf_dqd, q_sym(i)) * qd_sym(i)+...
              diff(dbetaLf_dqd, qd_sym(i)) * q2d_sym(i);
 end
 Y_f = tf - dbetaLf_dq;
-
+disp("finish Y_f");
 % Generate function from a symbolic expression for the regressor
 matlabFunction(Y_f,'File','autogen/standard_regressor_UR10E',...
                'Vars',{q_sym,qd_sym,q2d_sym});
+
+% matlabFunction( Y_f, ...
+%     'File','autogen/standard_regressor_UR10E', ...
+%     'Vars',{q_sym,qd_sym,q2d_sym}, ...
+%     'Optimize',false, ...
+%     'Sparse',true );           % ← 可省掉 dense 掃描              
+% for r = 1:n_links
+%     Y_row = vpa( Y_f(r,:) , 16);             % 先浮點化 + 只寫一列
+%     matlabFunction( Y_row, ...
+%         'File', sprintf('autogen/Y_row_%02d',r), ...
+%         'Vars',{q_sym,qd_sym,q2d_sym}, ...
+%         'Optimize',false,'Sparse',true );
+% end
+
+% Y_handle = matlabFunction( vpa(Y_f,16), ...     
+%     'Vars',{q_sym, qd_sym, q2d_sym}, ...
+%     'Optimize',false );                         
+
+% save('autogen/standard_regressor_UR10E.mat','Y_handle');

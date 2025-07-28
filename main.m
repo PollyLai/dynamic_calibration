@@ -3,7 +3,8 @@ clear all; close all; clc;
 % Define path to a urdf file
 path_to_urdf = 'ur10e.urdf';
 n_links = 6;
-
+% path_to_urdf = 'fixed_bipedal.urdf';
+% n_links = 10;    
 % Generate functions for dynamics based on Lagrange method
 % Note that it might take some timesqlpdemo
 % generate_rb_dynamics(path_to_urdf, n_links);  \\ some errors
@@ -27,9 +28,13 @@ include_motor_dynamics = 1;
 
 
 % Estimate drive gains
-% drive_gains = estimate_drive_gains(baseQR, 'PC-OLS', n_links);
+m_load = 2.805;
+path_to_unloaded_traj = 'ur-20_02_19_14harm50sec.csv';
+path_to_loaded_traj = 'ur-20_02_19_14harm50secLoad.csv';
+drive_gains = estimate_drive_gains(baseQR, 'PC-OLS', n_links, m_load,...
+                                   path_to_loaded_traj, path_to_unloaded_traj);
 % Or use those found in the paper by De Luca
-drive_gains = [14.87; 13.26; 11.13; 10.62; 11.03; 11.47]; 
+% drive_gains = [14.87; 13.26; 11.13; 10.62; 11.03; 11.47]; 
 
 
 % Estimate dynamic parameters

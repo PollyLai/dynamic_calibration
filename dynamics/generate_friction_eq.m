@@ -5,8 +5,6 @@ qd_sym = sym('qd%d',[n_links,1],'real');
 
 % Create symbolic experssions for friction parameters
 pi_frcn = sym('pi_frcn_%d%d', [n_links*3,1], 'real');
-arrayfun(@char, qd_sym, 'UniformOutput', false)
-arrayfun(@char, pi_frcn, 'UniformOutput', false)
 
 
 % Friction torque

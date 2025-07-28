@@ -56,9 +56,9 @@ if strcmp(optmznAlgorithm, 'patternsearch')
     optns_pttrnSrch.MaxTime = inf;
     optns_pttrnSrch.MaxFunctionEvaluations = 1e+6;
     
-    [x,fval] = patternsearch(@(x)traj_cost_lgr(x,traj_par,baseQR), x0, ...
+    [x,fval] = patternsearch(@(x)traj_cost_lgr(x,traj_par,baseQR,n_links), x0, ...
                              A, b, Aeq, beq, lb, ub, ...
-                             @(x)traj_cnstr(x,traj_par), optns_pttrnSrch);
+                             @(x)traj_cnstr(x,traj_par, n_links), optns_pttrnSrch);
 elseif strcmp(optmznAlgorithm, 'ga')
     optns_ga = optimoptions('ga');
     optns_ga.Display = 'iter';
@@ -68,9 +68,9 @@ elseif strcmp(optmznAlgorithm, 'ga')
     optns_ga.InitialPopulationRange = [-100; 100];
     optns_ga.SelectionFcn = 'selectionroulette';
 
-    [x,fval] = ga(@(x)traj_cost_lgr(x,traj_par,baseQR), n_links*2*traj_par.N,...
+    [x,fval] = ga(@(x)traj_cost_lgr(x,traj_par,baseQR,n_links), n_links*2*traj_par.N,...
                   A, b, Aeq, beq, lb, ub, ...
-                  @(x)traj_cnstr(x,traj_par), optns_ga);
+                  @(x)traj_cnstr(x,traj_par,n_links), optns_ga);
 else
     error('Chosen algorithm is not found among implemented ones');
 end

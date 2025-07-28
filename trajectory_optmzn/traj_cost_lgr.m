@@ -1,4 +1,4 @@
-function out = traj_cost_lgr(opt_vars,traj_par,baseQR)
+function out = traj_cost_lgr(opt_vars,traj_par,baseQR, n_links)
 % -------------------------------------------------------------------
 % This function computes cost in terms of condition number for 
 % trajectory optimization needed for dynamic parameter identification
