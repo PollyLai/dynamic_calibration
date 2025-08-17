@@ -14,6 +14,12 @@ assert(((numel(q)==n_links) && (numel(qd)==n_links) && (numel(q2d)==n_links)), .
 Y_rgd_bdy = standard_regressor_UR10E(q, qd, q2d);      % n × 10n
 Y_mtr = diag(q2d); 
 Y = zeros(n_links, 11*n_links, 'like', Y_rgd_bdy);
+
+% Polly
+% fprintf("Debugging...\n");
+% fprintf("YR size = [%d %d], class = %s\n", size(Y_rgd_bdy), class(Y_rgd_bdy));
+% fprintf("YM size = [%d %d], class = %s\n", size(Y_mtr), class(Y_mtr));
+
     for k = 1:n_links
         Y(:, (k-1)*11 + (1:11)) = [ ...
             Y_rgd_bdy(:, (k-1)*10 + (1:10)), ...  % 10 rigid cols

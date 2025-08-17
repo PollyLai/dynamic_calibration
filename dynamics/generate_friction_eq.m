@@ -15,3 +15,25 @@ tau_frcn = pi_frcn_tmp(:,1).*qd_sym + pi_frcn_tmp(:,2).*sign(qd_sym) + pi_frcn_t
 % Generate a fucnction from symbolic expressions
 matlabFunction(tau_frcn, 'File','autogen/F_vctr_fcn',...
                'Vars',{qd_sym, pi_frcn}, 'Optimize', true);
+
+
+end
+
+
+% function generate_friction_eq(n_links)
+% disp(n_links);
+% qd_sym = arrayfun(@(i) sym(sprintf('qd%d', i), 'real'), (1:n_links)).';
+% pi_frcn = arrayfun(@(i) sym(sprintf('pi_frcn_%d', i), 'real'), (1:(n_links*3))).';
+
+% % Reshape parameter vector into n_links x 3
+% pi_frcn_tmp = reshape(pi_frcn, [3, n_links])';  % now each row = [kv, kc, kt]
+
+% % Friction torque model
+% tau_frcn = pi_frcn_tmp(:,1).*qd_sym + pi_frcn_tmp(:,2).*sign(qd_sym) + pi_frcn_tmp(:,3);
+
+% % Export function
+% matlabFunction(tau_frcn, 'File','autogen/F_vctr_fcn', ...
+%                'Vars',{qd_sym, pi_frcn}, ...
+%                 'Outputs', {'tau_frcn'}, ...
+%                 'Optimize', true);
+% end

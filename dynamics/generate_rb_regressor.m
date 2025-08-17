@@ -25,10 +25,15 @@ for i = 1:n_links
     jnt_axs_k = str2num(ur10.robot.joint{i}.axis.Attributes.xyz)';
     % Transformation from parent link frame p to current joint frame
     rpy_k = sym(str2num(ur10.robot.joint{i}.origin.Attributes.rpy));
+    
+    
     R_pj = RPY(rpy_k);
     R_pj(abs(R_pj)<sqrt(eps)) = sym(0); % to avoid numerical errors
     p_pj = str2num(ur10.robot.joint{i}.origin.Attributes.xyz)';
     T_pj = sym([R_pj, p_pj; zeros(1,3), 1]); % to avoid numerical errors
+    fprintf("links: %d\n", i);
+    fprintf("origin:\n");
+    disp(p_pj);
     % Tranformation from joint frame of the joint that rotaties body k to
     % link frame. The transformation is pure rotation
     R_jk = Rot(q_sym(i),sym(jnt_axs_k));
@@ -69,31 +74,24 @@ dbetaLf_dqd = jacobian(beta_Lf,qd_sym)';
 n_cols  = size(dbetaLf_dqd, 2);
 tf = sym(zeros(n_links, n_cols));
 for i = 1:n_links
-    disp(i);
     tf = tf + diff(dbetaLf_dqd, q_sym(i)) * qd_sym(i)+...
              diff(dbetaLf_dqd, qd_sym(i)) * q2d_sym(i);
 end
 Y_f = tf - dbetaLf_dq;
 disp("finish Y_f");
+eval_handle = @(q,qd,q2d) double( subs( Y_f, ...
+    [q_sym; qd_sym; q2d_sym], ...
+    [q(:);  qd(:);   q2d(:)] ) );
+% if ~isfolder('autogen'), mkdir('autogen'); end
+save('autogen/standard_regressor_UR10E.mat','eval_handle');
+fprintf("✓ Symbolic regressor saved as handle (no huge .m file written)\n");
+
+
 % Generate function from a symbolic expression for the regressor
-matlabFunction(Y_f,'File','autogen/standard_regressor_UR10E',...
-               'Vars',{q_sym,qd_sym,q2d_sym});
+% matlabFunction(Y_f,'File','autogen/standard_regressor_UR10E',...
+%                'Vars',{q_sym,qd_sym,q2d_sym});
 
-% matlabFunction( Y_f, ...
-%     'File','autogen/standard_regressor_UR10E', ...
-%     'Vars',{q_sym,qd_sym,q2d_sym}, ...
-%     'Optimize',false, ...
-%     'Sparse',true );           % ← 可省掉 dense 掃描              
-% for r = 1:n_links
-%     Y_row = vpa( Y_f(r,:) , 16);             % 先浮點化 + 只寫一列
-%     matlabFunction( Y_row, ...
-%         'File', sprintf('autogen/Y_row_%02d',r), ...
-%         'Vars',{q_sym,qd_sym,q2d_sym}, ...
-%         'Optimize',false,'Sparse',true );
-% end
 
-% Y_handle = matlabFunction( vpa(Y_f,16), ...     
-%     'Vars',{q_sym, qd_sym, q2d_sym}, ...
-%     'Optimize',false );                         
 
-% save('autogen/standard_regressor_UR10E.mat','Y_handle');
+
+
