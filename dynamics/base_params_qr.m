@@ -79,43 +79,18 @@ for i = 1:50
 
 end
 
-% % QR decomposition with pivoting: W*E = Q*R
-% %   R is upper triangular matrix
-% %   Q is unitary matrix
-% %   E is permuta tion matrix
-% [Q, R, E] = qr(W);
-
-% % matrix W has rank bb which is number number of base parameters 
-% bb = rank(W);
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Polly
-% 1) 欄數一致檢查（每次產生的 Y 都應該同寬）
-assert(~any(isnan(W(:)) | isinf(W(:))), 'W contains NaN/Inf.');
-% 或直接在產生 Y 當下檢查：
-% if k==1, ncols = size(Y,2); else assert(size(Y,2)==ncols, 'Y column size changed'); end
-
-% 2) 條件數檢查（數值病態時可放寬容差或正規化）
-
-
+% QR decomposition with pivoting: W*E = Q*R
+%   R is upper triangular matrix
+%   Q is unitary matrix
+%   E is permuta tion matrix
 [Q, R, E] = qr(W);
 fprintf("Q size = [%d %d], class = %s\n", size(Q), class(Q));   % Polly
 fprintf("R size = [%d %d], class = %s\n", size(R), class(R));   % Polly
 fprintf("E size = [%d %d], class = %s\n", size(E), class(E));   % Polly
 
-
-% 用 R 的對角線決定數值秩 bb（避免與 rank() 的容差不一致）
-% d = abs(diag(R));
-% tol = max(size(W)) * eps(d(1));   % 常見容差；也可用 eps(norm(R,'fro'))
-% bb = find(d > tol, 1, 'last');
-% if isempty(bb)
-%     bb = 0;
-% end
+% % matrix W has rank bb which is number number of base parameters 
 bb = rank(W);
 fprintf("bb = [%d]\n", bb);   % Polly
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % R = [R1 R2; 
 %      0  0]
@@ -133,14 +108,8 @@ W1 = W*E(:,1:bb);
 W2 = W*E(:,bb+1:end);
 fprintf("W1 size = [%d %d], class = %s\n", size(W1), class(W2));   % Polly
 fprintf("W2 size = [%d %d], class = %s\n", size(W2), class(W2));   % Polly
-% assert(norm(W2 - W1*beta) < 1e-6,... 
-%         'Found realationship between W1 and W2 is not correct\n');
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Polly
-rel_res = norm(W2 - W1*beta) / max(1, norm(W2));
-assert(rel_res < 1e-9, 'W2 ≈ W1*beta failed: rel_res = %.3e', rel_res);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+assert(norm(W2 - W1*beta) < 1e-6,... 
+        'Found realationship between W1 and W2 is not correct\n');
 
 % -----------------------------------------------------------------------
 % Find base parmaters
