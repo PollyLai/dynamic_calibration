@@ -84,7 +84,7 @@ eval_handle = @(q,qd,q2d) double( subs( Y_f, ...
     [q(:);  qd(:);   q2d(:)] ) );
 % if ~isfolder('autogen'), mkdir('autogen'); end
 save('autogen/standard_regressor_UR10E.mat','eval_handle');
-fprintf("✓ Symbolic regressor saved as handle (no huge .m file written)\n");
+fprintf("Symbolic regressor saved as handle\n");
 
 
 % Generate function from a symbolic expression for the regressor
