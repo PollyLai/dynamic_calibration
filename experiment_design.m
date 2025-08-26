@@ -13,11 +13,12 @@
 % parameters into a file.
 % ---------------------------------------------------------------------
 % get robot description
+% addpath(genpath('/home/ldsc/Downloads/matlab_R2024a_Linux/dynamic_calibration'));
 addpath(genpath('autogen'));
-path_to_urdf = 'fixed_bipedal.urdf';
-n_links = 10;    
-% path_to_urdf = 'ur10e.urdf';
-% n_links = 6;    
+% path_to_urdf = 'fixed_bipedal.urdf';
+% n_links = 10;    
+path_to_urdf = 'ur10e.urdf';
+n_links = 6;    
 ur10 = parse_urdf(path_to_urdf, n_links);
 % get mapping from full parameters to base parameters
 include_motor_dynamics = 1;
@@ -27,7 +28,7 @@ include_motor_dynamics = 1;
 optmznAlgorithm = 'patternsearch';
 
 % Trajectory parameters
-traj_par.T = 25;          % period of signal
+traj_par.T = 20;          % period of signal
 traj_par.wf = 2*pi/traj_par.T;    % fundamental frequency
 traj_par.t_smp = 2e-1;   % sampling time
 traj_par.t = 0:traj_par.t_smp:traj_par.T;  % time

@@ -64,7 +64,8 @@ pi_lgr_sym = reshape(pi_lgr_sym, [nLnkPrms*nLnks, 1]);
 % -----------------------------------------------------------------------
 % Get observation matrix of identifiable paramters
 W = [];    
-for i = 1:50
+% 25 for links=6
+for i = 1:25
     q_rnd = q_min + (q_max - q_min).*rand(n_links,1);
     qd_rnd = -qd_max + 2*qd_max.*rand(n_links,1);
     q2d_rnd = -q2d_max + 2*q2d_max.*rand(n_links,1);
