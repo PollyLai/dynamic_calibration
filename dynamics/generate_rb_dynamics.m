@@ -1,11 +1,11 @@
-function generate_rb_dynamics(path_to_urdf)
+function generate_rb_dynamics(path_to_urdf, n_links)
 % ----------------------------------------------------------------------
 % Function generates rigid body dynamics equations, namely M, C matrices
 % and g vector: M(q) ddq + C(q, dq) dq + g(q) = tau
 % ----------------------------------------------------------------------
 
 % Parse urdf to get robot description
-ur10 = parse_urdf(path_to_urdf);
+ur10 = parse_urdf(path_to_urdf, n_links);
 
 % Create symbolic generilized coordiates, their first and second deriatives
 q_sym = sym('q%d',[6,1],'real');
@@ -21,7 +21,7 @@ v_kk(:,1) = sym(zeros(3,1)); % linear velocity of the origin of frame k in frame
 g_kk(:,1) = sym([0,0,9.81])'; % vector of graviatational accelerations in frame k
 p_kk(:,1) = sym(zeros(3,1)); % origin of frame k in frame k
 
-for i = 1:6
+for i = 1:n_links
     jnt_axs_k = str2num(ur10.robot.joint{i}.axis.Attributes.xyz)';
     % Transformation from parent link frame p to current joint frame
     rpy_k = sym(str2num(ur10.robot.joint{i}.origin.Attributes.rpy));

@@ -1,4 +1,5 @@
-function drvGains = estimate_drive_gains(baseQR, method)
+function drvGains = estimate_drive_gains(baseQR, method, n_links, m_load,...
+    path_to_loaded_traj, path_to_unloaded_traj)
 % ------------------------------------------------------------------------
 % The function estimates drive gains for the UR10E robot. 
 % To do that several methods were used: total least squares approach; 
@@ -15,9 +16,9 @@ function drvGains = estimate_drive_gains(baseQR, method)
 % Outputs:
 %   drvGains - estimated drive gains
 % -----------------------------------------------------------------------
-m_load = 2.805;
-path_to_unloaded_traj = 'ur-20_02_19_14harm50sec.csv';
-path_to_loaded_traj = 'ur-20_02_19_14harm50secLoad.csv';
+% m_load = 2.805;
+% path_to_unloaded_traj = 'ur-20_02_19_14harm50sec.csv';
+% path_to_loaded_traj = 'ur-20_02_19_14harm50secLoad.csv';
 
 % ------------------------------------------------------------------------
 % Load raw data and procces it (filter and estimate accelerations). 
@@ -26,10 +27,10 @@ path_to_loaded_traj = 'ur-20_02_19_14harm50secLoad.csv';
 % Nonetheless, during validation they provide the more or less the same
 % result. So, any unloaded trajectory from the given list can be chosen
 % ------------------------------------------------------------------------
-unloadedTrajectory = parseURData(path_to_unloaded_traj, 195, 4966);
+unloadedTrajectory = parseURData(path_to_unloaded_traj, 1, 390);
 unloadedTrajectory = filterData(unloadedTrajectory);
 
-loadedTrajectory = parseURData(path_to_loaded_traj, 308, 5071);
+loadedTrajectory = parseURData(path_to_loaded_traj, 1, 390);
 loadedTrajectory = filterData(loadedTrajectory);
 
 % ------------------------------------------------------------------------
@@ -45,7 +46,8 @@ Wb_uldd = []; I_uldd = [];
 for i = 1:1:length(unloadedTrajectory.t)
     Y_ulddi = regressorWithMotorDynamics(unloadedTrajectory.q(i,:)',...
                                          unloadedTrajectory.qd_fltrd(i,:)',...
-                                         unloadedTrajectory.q2d_est(i,:)');
+                                         unloadedTrajectory.q2d_est(i,:)',...
+                                         n_links);
                                      
     Yfrctni = frictionRegressor(unloadedTrajectory.qd_fltrd(i,:)');
     Ybi_uldd = [Y_ulddi*E1, Yfrctni];
@@ -59,7 +61,8 @@ Wb_ldd = []; Wl = []; I_ldd = [];
 for i = 1:1:length(loadedTrajectory.t)
     Y_lddi = regressorWithMotorDynamics(loadedTrajectory.q(i,:)',...
                                         loadedTrajectory.qd_fltrd(i,:)',...
-                                        loadedTrajectory.q2d_est(i,:)');
+                                        loadedTrajectory.q2d_est(i,:)',...
+                                        n_links);
                                     
     Yfrctni = frictionRegressor(loadedTrajectory.qd_fltrd(i,:)');
     Ybi_ldd = [Y_lddi*E1, Yfrctni];
@@ -167,6 +170,7 @@ elseif strcmp(method, 'PC-OLS')
     % Solving sdp problem
     sol = optimize(cnstr,obj,sdpsettings('solver','sdpt3'));
 
+    
     % Getting values of the estimated patamters
     drvGains = value(drv_gns);
 else

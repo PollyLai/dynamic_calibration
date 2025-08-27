@@ -1,4 +1,4 @@
-function sol = estimate_dynamic_params(path_to_data, idx, drvGains, baseQR, method)
+function sol = estimate_dynamic_params(path_to_data, idx, drvGains, baseQR, method, n_links)
 % -----------------------------------------------------------------------
 % In this script identification of inertial parameters of the UR10E
 % is carried out. Two approaches are implemented: ordinary least squares
@@ -35,8 +35,11 @@ idntfcnTrjctry = filterData(idntfcnTrjctry);
 % -------------------------------------------------------------------
 % Generate Regressors based on data
 % ------------------------------------------------------------------------
-[Tau, Wb] = buildObservationMatrices(idntfcnTrjctry, baseQR, drvGains);
+[Tau, Wb] = buildObservationMatrices(idntfcnTrjctry, baseQR, drvGains, n_links);
 
+if any(isnan(Tau(:))) || any(isnan(Wb(:)))
+    error('Tau or Wb contains NaN values before optimization.');
+end
 % ---------------------------------------------------------------------
 % Estimate parameters
 % ---------------------------------------------------------------------
@@ -57,10 +60,11 @@ end
 % unbiased estimation of the standard deviation
 sqrd_sgma_e = norm(Tau - Wb*[sol.pi_b; sol.pi_fr], 2)^2/...
                 (size(Wb, 1) - size(Wb, 2));
-            
+   
 % the covariance matrix of the estimation error
 Cpi = sqrd_sgma_e*inv(Wb'*Wb);
 sol.std = sqrt(diag(Cpi));
+
 
 % relative standard deviation
 sol.rel_std = 100*sol.std./abs([sol.pi_b; sol.pi_fr]);
@@ -68,7 +72,7 @@ end
 
 
 % Local unctions
-function [Tau, Wb] = buildObservationMatrices(idntfcnTrjctry, baseQR, drvGains)
+function [Tau, Wb] = buildObservationMatrices(idntfcnTrjctry, baseQR, drvGains, n_links)
     % The function builds observation matrix for UR10E
     E1 = baseQR.permutationMatrix(:,1:baseQR.numberOfBaseParameters);
 
@@ -76,11 +80,12 @@ function [Tau, Wb] = buildObservationMatrices(idntfcnTrjctry, baseQR, drvGains)
     for i = 1:1:length(idntfcnTrjctry.t)
          Yi = regressorWithMotorDynamics(idntfcnTrjctry.q(i,:)',...
                                          idntfcnTrjctry.qd_fltrd(i,:)',...
-                                         idntfcnTrjctry.q2d_est(i,:)');
+                                         idntfcnTrjctry.q2d_est(i,:)', n_links);
         Yfrctni = frictionRegressor(idntfcnTrjctry.qd_fltrd(i,:)');
         Ybi = [Yi*E1, Yfrctni];
 
         Wb = vertcat(Wb, Ybi);
+        % Tau = vertcat(Tau, diag(drvGains)*idntfcnTrjctry.i_fltrd(i,:)');
         Tau = vertcat(Tau, diag(drvGains)*idntfcnTrjctry.i_fltrd(i,:)');
     end
 end

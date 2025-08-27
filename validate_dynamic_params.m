@@ -1,4 +1,4 @@
-function rre = validate_dynamic_params(path_to_data, idx, drvGains, baseQR, pi_b, pi_fr)
+function rre = validate_dynamic_params(path_to_data, idx, drvGains, baseQR, pi_b, pi_fr, n_links)
 % ---------------------------------------------------------------------
 % Function perform validation of a given parameters on a given trajectory
 % 
@@ -28,7 +28,7 @@ for i = 1:length(vldtnTrjctry.t)
     qdi = vldtnTrjctry.qd_fltrd(i,:)';
     q2di = vldtnTrjctry.q2d_est(i,:)';
     if baseQR.motorDynamicsIncluded
-        Yi = regressorWithMotorDynamics(qi, qdi, q2di);
+        Yi = regressorWithMotorDynamics(qi, qdi, q2di, n_links);
     else 
         Yi = standard_regressor_UR10E(qi, qdi, q2di);
     end

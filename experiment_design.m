@@ -1,3 +1,4 @@
+% clear all; close all; clc;
 % ---------------------------------------------------------------------
 % In this script trajectory optimization otherwise called experiment
 % design for dynamic paramters identification is carried out. 
@@ -12,18 +13,22 @@
 % parameters into a file.
 % ---------------------------------------------------------------------
 % get robot description
+% addpath(genpath('/home/ldsc/Downloads/matlab_R2024a_Linux/dynamic_calibration'));
+addpath(genpath('autogen'));
+% path_to_urdf = 'fixed_bipedal.urdf';
+% n_links = 10;    
 path_to_urdf = 'ur10e.urdf';
-ur10 = parse_urdf(path_to_urdf);
-
+n_links = 6;    
+ur10 = parse_urdf(path_to_urdf, n_links);
 % get mapping from full parameters to base parameters
 include_motor_dynamics = 1;
-[~, baseQR] = base_params_qr(include_motor_dynamics);
+[~, baseQR] = base_params_qr(include_motor_dynamics, n_links);
 
 % Choose optimization algorithm: 'patternsearch', 'ga'
 optmznAlgorithm = 'patternsearch';
 
 % Trajectory parameters
-traj_par.T = 25;          % period of signal
+traj_par.T = 20;          % period of signal
 traj_par.wf = 2*pi/traj_par.T;    % fundamental frequency
 traj_par.t_smp = 2e-1;   % sampling time
 traj_par.t = 0:traj_par.t_smp:traj_par.T;  % time
@@ -32,18 +37,19 @@ traj_par.q0 = deg2rad([0 -90 0 -90 0 0 ]');
 % Use different limit for positions for safety
 traj_par.q_min = -deg2rad([180  180  100   180  90   90]');
 traj_par.q_max =  deg2rad([180  0    100   0    90   90]');
+qd_max = 3*pi*ones(n_links,1);
 traj_par.qd_max = qd_max;
 traj_par.q2d_max = [2 1 1 1 1 2.5]';
 
 %  ----------------------------------------------------------------------
 % Otimization
-% -----------------------------------------------------------------------
+%  ----------------------------------------------------------------------
 A = []; b = [];
 Aeq = []; beq = [];
 lb = []; ub = [];
 
 if strcmp(optmznAlgorithm, 'patternsearch')
-    x0 = rand(6*2*traj_par.N,1);
+    x0 = rand(n_links*2*traj_par.N,1);
     optns_pttrnSrch = optimoptions('patternsearch');
     optns_pttrnSrch.Display = 'iter';
     optns_pttrnSrch.StepTolerance = 1e-1;
@@ -52,9 +58,9 @@ if strcmp(optmznAlgorithm, 'patternsearch')
     optns_pttrnSrch.MaxTime = inf;
     optns_pttrnSrch.MaxFunctionEvaluations = 1e+6;
     
-    [x,fval] = patternsearch(@(x)traj_cost_lgr(x,traj_par,baseQR), x0, ...
+    [x,fval] = patternsearch(@(x)traj_cost_lgr(x,traj_par,baseQR,n_links), x0, ...
                              A, b, Aeq, beq, lb, ub, ...
-                             @(x)traj_cnstr(x,traj_par), optns_pttrnSrch);
+                             @(x)traj_cnstr(x,traj_par, n_links), optns_pttrnSrch);
 elseif strcmp(optmznAlgorithm, 'ga')
     optns_ga = optimoptions('ga');
     optns_ga.Display = 'iter';
@@ -64,9 +70,9 @@ elseif strcmp(optmznAlgorithm, 'ga')
     optns_ga.InitialPopulationRange = [-100; 100];
     optns_ga.SelectionFcn = 'selectionroulette';
 
-    [x,fval] = ga(@(x)traj_cost_lgr(x,traj_par,baseQR), 6*2*traj_par.N,...
+    [x,fval] = ga(@(x)traj_cost_lgr(x,traj_par,baseQR,n_links), n_links*2*traj_par.N,...
                   A, b, Aeq, beq, lb, ub, ...
-                  @(x)traj_cnstr(x,traj_par), optns_ga);
+                  @(x)traj_cnstr(x,traj_par,n_links), optns_ga);
 else
     error('Chosen algorithm is not found among implemented ones');
 end
@@ -77,8 +83,8 @@ end
 ab = reshape(x,[12,traj_par.N]);
 a = ab(1:6,:); % sin coeffs
 b = ab(7:12,:); % cos coeffs
-c_pol = getPolCoeffs(traj_par.T, a, b, traj_par.wf, traj_par.N, traj_par.q0);
-[q,qd,q2d] = mixed_traj(traj_par.t, c_pol, a, b, traj_par.wf, traj_par.N);
+c_pol = getPolCoeffs(traj_par.T, a, b, traj_par.wf, traj_par.N, traj_par.q0, n_links);
+[q,qd,q2d] = mixed_traj(traj_par.t, c_pol, a, b, traj_par.wf, traj_par.N, n_links);
 
 figure
 subplot(3,1,1)
@@ -112,3 +118,4 @@ elseif strcmp(optmznAlgorithm, 'fmincon')
 end
 save(filename,'a','b','c_pol','traj_par')
 %}
+

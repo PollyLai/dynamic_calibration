@@ -1,4 +1,4 @@
-function out = getPolCoeffs(T,a,b,wf,N,q0)
+function out = getPolCoeffs(T,a,b,wf,N,q0, n_links)
 % -----------------------------------------------------------------------
 % The function computes coefficeints of the 5-th order polynomail
 % from a and b coefficients of the finite furier series and 
@@ -19,10 +19,10 @@ qh0 = -sum(b./((1:N)*wf),2);
 qdh0 = sum(a,2);
 q2dh0 = sum(b.*(1:1:N)*wf,2);
 
-[qhT,qdhT,q2dhT] = fourier_series_traj(T,zeros(6,1),a,b,wf,N);
+[qhT,qdhT,q2dhT] = fourier_series_traj(T,zeros(n_links,1),a,b,wf,N);
 
-I_6x6 = eye(6);
-O_6x6 = zeros(6);
+I_6x6 = eye(n_links);
+O_6x6 = zeros(n_links);
 
 Ac = [I_6x6, O_6x6, O_6x6, O_6x6, O_6x6, O_6x6;
       O_6x6, I_6x6, O_6x6, O_6x6, O_6x6, O_6x6;
@@ -33,4 +33,4 @@ Ac = [I_6x6, O_6x6, O_6x6, O_6x6, O_6x6, O_6x6;
 
 % q0 = deg2rad([0    -90   0     -90   0     0 ]');  % !!!!!!!!!!!
 c = Ac\[q0-qh0; -qdh0; -q2dh0; q0-qhT; -qdhT; -q2dhT];
-out = reshape(c,[6,6]);
+out = reshape(c,[n_links,6]);
