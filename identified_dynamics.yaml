@@ -1,0 +1,359 @@
+# UR10E Robot Identified Dynamics Parameters
+# Generated: 2025-08-25 17:01:42
+
+metadata:
+  timestamp: "2025-08-25 17:01:42"
+  urdf_file: "ur10e.urdf"
+  estimation_method: "PC-OLS"
+  drive_gain_method: "PC-OLS"
+  estimation_data: "ur10_simulation_telemetry_2.csv"
+  estimation_indices: [100, 1400]
+  validation_data: "ur10_simulation_telemetry_2.csv"
+  validation_indices: [100, 1400]
+
+base_parameters_info:
+  number_of_base_parameters: 40
+  motor_dynamics_included: true
+
+drive_gains:
+  joint_1: 10.000000
+  joint_2: 10.695625
+  joint_3: 8.456585
+  joint_4: 9.002877
+  joint_5: 9.479972
+  joint_6: 10.123173
+
+base_parameters:
+  dimension: 40
+  values:
+    - index: 1
+      value: -4.52431992e-03
+      std: 8.76992847e-03
+      rel_std_percent: 193.84
+    - index: 2
+      value: -8.81179588e-04
+      std: 1.00849227e-02
+      rel_std_percent: 1144.48
+    - index: 3
+      value: -3.68069144e-04
+      std: 7.90140002e-03
+      rel_std_percent: 2146.72
+    - index: 4
+      value: -2.72855219e-03
+      std: 1.30182981e-02
+      rel_std_percent: 477.11
+    - index: 5
+      value: 1.96149702e-03
+      std: 1.61085948e-02
+      rel_std_percent: 821.24
+    - index: 6
+      value: 2.04918475e-02
+      std: 2.66090872e-03
+      rel_std_percent: 12.99
+    - index: 7
+      value: 3.99109667e-03
+      std: 2.67093791e-03
+      rel_std_percent: 66.92
+    - index: 8
+      value: 5.76050322e-03
+      std: 1.70413622e-02
+      rel_std_percent: 295.83
+    - index: 9
+      value: -1.27533879e-03
+      std: 1.94399396e-02
+      rel_std_percent: 1524.30
+    - index: 10
+      value: 2.09273402e-01
+      std: 4.10628543e-02
+      rel_std_percent: 19.62
+    - index: 11
+      value: -5.49084920e-02
+      std: 3.07525486e-02
+      rel_std_percent: 56.01
+    - index: 12
+      value: 5.49486519e-01
+      std: 4.57336289e-03
+      rel_std_percent: 0.83
+    - index: 13
+      value: 1.17554680e-02
+      std: 4.99166341e-03
+      rel_std_percent: 42.46
+    - index: 14
+      value: 5.94407844e-01
+      std: 4.03053471e-03
+      rel_std_percent: 0.68
+    - index: 15
+      value: 2.58772437e-03
+      std: 2.46792403e-02
+      rel_std_percent: 953.70
+    - index: 16
+      value: -1.67119094e-02
+      std: 6.13616949e-03
+      rel_std_percent: 36.72
+    - index: 17
+      value: 2.07455279e-01
+      std: 4.17561144e-02
+      rel_std_percent: 20.13
+    - index: 18
+      value: -9.41660133e-05
+      std: 2.04733007e-02
+      rel_std_percent: 21741.71
+    - index: 19
+      value: -2.33760903e-02
+      std: 2.40595942e-02
+      rel_std_percent: 102.92
+    - index: 20
+      value: 4.11066294e+00
+      std: 4.74181913e-03
+      rel_std_percent: 0.12
+    - index: 21
+      value: 9.71054676e-03
+      std: 1.04910740e-02
+      rel_std_percent: 108.04
+    - index: 22
+      value: -4.13994169e-01
+      std: 3.28622101e-02
+      rel_std_percent: 7.94
+    - index: 23
+      value: -8.03340148e-02
+      std: 4.58278174e-02
+      rel_std_percent: 57.05
+    - index: 24
+      value: 9.87774586e-04
+      std: 2.92715183e-02
+      rel_std_percent: 2963.38
+    - index: 25
+      value: -1.89105785e-02
+      std: 3.56302649e-02
+      rel_std_percent: 188.41
+    - index: 26
+      value: 8.04622173e-02
+      std: 3.82181083e-02
+      rel_std_percent: 47.50
+    - index: 27
+      value: -1.97873836e+00
+      std: 4.60714153e-02
+      rel_std_percent: 2.33
+    - index: 28
+      value: 4.75907598e-01
+      std: 3.09895190e-02
+      rel_std_percent: 6.51
+    - index: 29
+      value: 2.06624862e+00
+      std: 7.98524818e-02
+      rel_std_percent: 3.86
+    - index: 30
+      value: -4.20032230e-02
+      std: 3.18788685e-02
+      rel_std_percent: 75.90
+    - index: 31
+      value: 2.36761631e+00
+      std: 4.35011596e-02
+      rel_std_percent: 1.84
+    - index: 32
+      value: 4.09483444e+00
+      std: 4.64933756e-02
+      rel_std_percent: 1.14
+    - index: 33
+      value: 6.46851656e-08
+      std: 2.95405212e-02
+      rel_std_percent: 45668154.21
+    - index: 34
+      value: 3.98885672e-07
+      std: 6.96538541e-02
+      rel_std_percent: 17462109.81
+    - index: 35
+      value: 6.10389096e-08
+      std: 6.50424417e-02
+      rel_std_percent: 106558983.63
+    - index: 36
+      value: 1.03349805e-09
+      std: 5.67900569e-02
+      rel_std_percent: 5494936051.49
+    - index: 37
+      value: 4.28850433e+00
+      std: 9.50360613e-02
+      rel_std_percent: 2.22
+    - index: 38
+      value: 2.36735723e+00
+      std: 5.15545759e-02
+      rel_std_percent: 2.18
+    - index: 39
+      value: 8.71189557e+00
+      std: 8.00640870e-03
+      rel_std_percent: 0.09
+    - index: 40
+      value: -1.33726364e-01
+      std: 1.25026381e-02
+      rel_std_percent: 9.35
+
+friction_parameters:
+  dimension: 18
+  # Format: [viscous, coulomb, offset] for each joint
+  joint_1:
+    viscous: 7.53285307e-09
+    coulomb: 7.62359226e-02
+    offset: -1.23359371e-02
+    viscous_std: 4.74063757e-02
+    coulomb_std: 4.32795299e-02
+    offset_std: 2.02794190e-02
+  joint_2:
+    viscous: 5.21491431e-09
+    coulomb: 6.56423065e-10
+    offset: -9.03435904e-01
+    viscous_std: 9.00590957e-02
+    coulomb_std: 3.90526999e-02
+    offset_std: 1.09577540e-01
+  joint_3:
+    viscous: 1.41904081e-09
+    coulomb: 2.98088633e-10
+    offset: -3.33759616e-01
+    viscous_std: 7.03075622e-02
+    coulomb_std: 4.00979196e-02
+    offset_std: 4.71817025e-02
+  joint_4:
+    viscous: 1.35981597e-01
+    coulomb: 2.56162745e-08
+    offset: 4.49826830e-02
+    viscous_std: 1.03695293e-01
+    coulomb_std: 4.04525085e-02
+    offset_std: 2.48615673e-02
+  joint_5:
+    viscous: 3.08740400e-07
+    coulomb: 6.74678248e-03
+    offset: -3.67654134e-02
+    viscous_std: 1.09643107e-01
+    coulomb_std: 3.63029342e-02
+    offset_std: 2.13194153e-02
+  joint_6:
+    viscous: 6.19223242e-03
+    coulomb: 2.07443961e-05
+    offset: -7.61434704e-03
+    viscous_std: 5.91155690e-02
+    coulomb_std: 4.33137459e-02
+    offset_std: 2.02843119e-02
+
+standard_parameters:
+  dimension: 66
+  # Inertial parameters in standard form [Ixx, Ixy, Ixz, Iyy, Iyz, Izz, mx, my, mz, m, Im]
+  link_1:
+    Ixx: 2.43604064e+01
+    Ixy: 8.16198869e-29
+    Ixz: -4.94621315e-26
+    Iyy: 2.43604064e+01
+    Iyz: -4.94621315e-26
+    Izz: -1.87380368e-11
+    mx: -4.91602771e-26
+    my: -4.91602771e-26
+    mz: 2.46126562e-15
+    mass: 4.86362209e+00
+    Im: -7.50020613e-12
+  link_2:
+    Ixx: 9.89262185e-01
+    Ixy: -4.20032230e-02
+    Ixz: -2.33760903e-02
+    Iyy: 8.88024923e-01
+    Iyz: 2.85710758e-01
+    Izz: 1.97888174e-01
+    mx: -1.33726364e-01
+    my: -1.36768667e+00
+    mz: 3.32288998e+00
+    mass: 1.42230000e+01
+    Im: 9.70189759e-02
+  link_3:
+    Ixx: 5.98129861e-01
+    Ixy: -1.89105785e-02
+    Ixz: -9.41660133e-05
+    Iyy: 5.87913517e-01
+    Iyz: -1.57906536e-01
+    Izz: 9.77266021e-02
+    mx: 9.71054676e-03
+    my: 4.45632503e-01
+    mz: 1.52163475e+00
+    mass: 4.25700000e+00
+    Im: 1.03349805e-09
+  link_4:
+    Ixx: 5.92251923e-02
+    Ixy: 9.87774586e-04
+    Ixz: 2.58772437e-03
+    Iyy: 5.18226838e-02
+    Iyz: -1.97320892e-02
+    Izz: 7.66159242e-03
+    mx: -1.67119094e-02
+    my: 1.27432727e-01
+    mz: 3.33841898e-01
+    mass: 2.15600000e+00
+    Im: 3.98885672e-07
+  link_5:
+    Ixx: 1.41529732e-01
+    Ixy: -2.72855219e-03
+    Ixz: -1.27533879e-03
+    Iyy: 2.54398536e-02
+    Iyz: -5.42908323e-02
+    Izz: 1.16218081e-01
+    mx: 1.17554680e-02
+    my: 5.00427796e-01
+    mz: 2.33901947e-01
+    mass: 2.15600000e+00
+    Im: 6.10389096e-08
+  link_6:
+    Ixx: 1.09031829e-02
+    Ixy: -4.52431992e-03
+    Ixz: -3.68069144e-04
+    Iyy: 1.96149702e-03
+    Iyz: -8.81179588e-04
+    Izz: 1.27213058e-02
+    mx: 2.04918475e-02
+    my: 4.90587237e-02
+    mz: 3.99109667e-03
+    mass: 2.22199998e-01
+    Im: 6.46851656e-08
+
+validation_results:
+  relative_residual_error_percent:
+    joint_1: 42.78
+    joint_2: 4.17
+    joint_3: 4.73
+    joint_4: 5.52
+    joint_5: 7.71
+    joint_6: 37.85
+  mean_rre: 17.13
+  max_rre: 42.78
+
+joint_info:
+  joint_1:
+    name: "shoulder_pan_joint"
+    type: "revolute"
+    axis: [0 0 1]
+    origin_xyz: [0.0 0.0 0.181]
+    origin_rpy: [0.0 0.0 0.0]
+  joint_2:
+    name: "shoulder_lift_joint"
+    type: "revolute"
+    axis: [0 1 0]
+    origin_xyz: [0.0 0.176 0.0]
+    origin_rpy: [0.0 1.57079632679 0.0]
+  joint_3:
+    name: "elbow_joint"
+    type: "revolute"
+    axis: [0 1 0]
+    origin_xyz: [0.0 -0.137 0.613]
+    origin_rpy: [0.0 0.0 0.0]
+  joint_4:
+    name: "wrist_1_joint"
+    type: "revolute"
+    axis: [0 1 0]
+    origin_xyz: [0.0 0.0 0.571]
+    origin_rpy: [0.0 1.57079632679 0.0]
+  joint_5:
+    name: "wrist_2_joint"
+    type: "revolute"
+    axis: [0 0 1]
+    origin_xyz: [0.0 0.135 0.0]
+    origin_rpy: [0.0 0.0 0.0]
+  joint_6:
+    name: "wrist_3_joint"
+    type: "revolute"
+    axis: [0 1 0]
+    origin_xyz: [0.0 0.0 0.12]
+    origin_rpy: [0.0 0.0 0.0]
