@@ -32,7 +32,7 @@ traj_par.T = 20;          % period of signal
 traj_par.wf = 2*pi/traj_par.T;    % fundamental frequency
 traj_par.t_smp = 2e-1;   % sampling time
 traj_par.t = 0:traj_par.t_smp:traj_par.T;  % time
-traj_par.N = 7;          % number of harmonics
+traj_par.N = 8;          % number of harmonics
 traj_par.q0 = deg2rad([0 -90 0 -90 0 0 ]');
 % Use different limit for positions for safety
 traj_par.q_min = -deg2rad([180  180  100   180  90   90]');

@@ -79,19 +79,21 @@ for i = 1:n_links
 end
 Y_f = tf - dbetaLf_dq;
 disp("finish Y_f");
-eval_handle = @(q,qd,q2d) double( subs( Y_f, ...
-    [q_sym; qd_sym; q2d_sym], ...
-    [q(:);  qd(:);   q2d(:)] ) );
-% if ~isfolder('autogen'), mkdir('autogen'); end
-save('autogen/standard_regressor_UR10E.mat','eval_handle');
-fprintf("Symbolic regressor saved as handle\n");
+
+
+% eval_handle = @(q,qd,q2d) double( subs( Y_f, ...
+%     [q_sym; qd_sym; q2d_sym], ...
+%     [q(:);  qd(:);   q2d(:)] ) );
+% % if ~isfolder('autogen'), mkdir('autogen'); end
+% save('autogen/standard_regressor_UR10E.mat','eval_handle');
+% fprintf("Symbolic regressor saved as handle\n");
 
 
 % Generate function from a symbolic expression for the regressor
-% matlabFunction(Y_f,'File','autogen/standard_regressor_UR10E',...
-%                'Vars',{q_sym,qd_sym,q2d_sym});
+matlabFunction(Y_f,'File','autogen/standard_regressor_UR10E',...
+               'Vars',{q_sym,qd_sym,q2d_sym});
 
-
+fprintf("Symbolic regressor saved as handle\n");
 
 
 
