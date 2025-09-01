@@ -47,7 +47,7 @@ sol = estimate_dynamic_params(path_to_est_data, idxs, ...
 
 
 % Validate estimated parameters
-path_to_val_data = 'ur10_simulation_telemetry_.csv';     idxs = [1, 390];
+path_to_val_data = 'ur10_simulation_telemetry_2.csv';     idxs = [1, 390];
 
 
 

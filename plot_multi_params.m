@@ -1,4 +1,4 @@
-function rre = plot_multi_params(path_to_data, idx, baseQR, drive_gains, varargin)
+function rre = plot_multi_params(path_to_data, idx, baseQR, drive_gains, n_links, varargin)
 
 options.plot_measured = true;
 options.line_width_measured = 1.5;
@@ -21,7 +21,13 @@ n_sets = length(param_sets);
 tau_measured = [];
 tau_predicted = cell(n_sets, 1);
 rre = zeros(6, n_sets);
+% % 取樣率（給下步可選平滑用）
+% dt = diff(vldtnTrjctry.t(:)); dt = dt(dt>0); Fs = 1/median(dt);
+% 
+% % ★ 真正用於 RRE 與數值比較的量測扭矩（6×N）：K * i_fltrd
+% tau_measured = diag(drive_gains) * vldtnTrjctry.i_fltrd';   % 6 x N
 
+% ======================================================================
 for i = 1:length(vldtnTrjctry.t)
     tau_measured = horzcat(tau_measured, diag(drive_gains)*vldtnTrjctry.i(i,:)');
 end
@@ -40,9 +46,9 @@ for set_idx = 1:n_sets
         q2di = vldtnTrjctry.q2d_est(i,:)';
         
         if baseQR.motorDynamicsIncluded
-            Yi = regressorWithMotorDynamics(qi, qdi, q2di);
+            Yi = regressorWithMotorDynamics(qi, qdi, q2di, n_links);
         else 
-            Yi = standard_regressor_UR10E(qi, qdi, q2di);
+            Yi = standard_regressor_UR10E(qi, qdi, q2di, n_links);
         end
         
         Ybi = Yi*baseQR.permutationMatrix(:,1:baseQR.numberOfBaseParameters);
@@ -61,7 +67,8 @@ for set_idx = 1:n_sets
         tau_pred_current = horzcat(tau_pred_current, regressor_combined * params_combined);
     end
     
-    tau_predicted{set_idx} = drvGains .* tau_pred_current;
+    % tau_predicted{set_idx} = drvGains .* tau_pred_current;
+    tau_predicted{set_idx} = tau_pred_current;
     
     for joint = 1:6
         rre(joint, set_idx) = 100*norm(tau_measured(joint,:) - tau_predicted{set_idx}(joint,:))/norm(tau_measured(joint,:));
