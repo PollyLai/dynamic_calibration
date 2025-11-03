@@ -12,12 +12,13 @@
 % parameters into a file.
 % ---------------------------------------------------------------------
 % get robot description
-path_to_urdf = 'ur10e.urdf';
+path_to_urdf = 'urdf/fixed_bipedal.urdf';
+dof = 10;
 ur10 = parse_urdf(path_to_urdf);
 
 % get mapping from full parameters to base parameters
 include_motor_dynamics = 1;
-[~, baseQR] = base_params_qr(include_motor_dynamics);
+[~, baseQR] = base_params_qr(include_motor_dynamics, dof);
 
 % Choose optimization algorithm: 'patternsearch', 'ga'
 optmznAlgorithm = 'patternsearch';
@@ -27,15 +28,24 @@ optmznAlgorithm = 'patternsearch';
 traj_par.T = 10;          % period of signal
 traj_par.wf = 2*pi/traj_par.T;    % fundamental frequency
 % traj_par.t_smp = 2e-1;   % sampling time
-traj_par.t_smp = 1e-2;   % sampling time
+traj_par.t_smp = 2e-1;   % sampling time
 traj_par.t = 0:traj_par.t_smp:traj_par.T;  % time
 traj_par.N = 7;          % number of harmonics
-traj_par.q0 = deg2rad([0 -90 0 -90 0 0 ]');
+% traj_par.q0 = deg2rad([0 -90 0 -90 0 0 ]');
 % Use different limit for positions for safety
-traj_par.q_min = -deg2rad([180  180  100   180  90   90]');
-traj_par.q_max =  deg2rad([180  0    100   0    90   90]');
-traj_par.qd_max = 3*pi*ones(6,1);
-traj_par.q2d_max = [2 1 1 1 1 2.5]';
+% traj_par.q_min = -deg2rad([180  180  100   180  90   90]');
+% traj_par.q_max =  deg2rad([180  0    100   0    90   90]');
+% traj_par.qd_max = 3*pi*ones(dof,1);
+% traj_par.q2d_max = [2 1 1 1 1 2.5]';
+
+traj_par.q0  = zeros(dof,1);
+traj_par.q_min = ([-0.3490659  -0.4363323  -1.0471976   -0.523599  -0.523599 ...
+                   -0.6981317  -1.0471976  -0.523599    -0.523599  -0.6981317]');
+traj_par.q_max = ([1.0471976    0.4363319   0.5235988    0.523599   0.523599 ...
+                   0.5235988    0.5235988   0.523599     0.523599   0.5235988]');
+
+traj_par.qd_max = 3*pi*ones(dof,1);
+traj_par.q2d_max = 3.0 * ones(dof,1);
 
 %  ----------------------------------------------------------------------
 % Otimization
@@ -45,7 +55,7 @@ Aeq = []; beq = [];
 lb = []; ub = [];
 
 if strcmp(optmznAlgorithm, 'patternsearch')
-    x0 = rand(6*2*traj_par.N,1);
+    x0 = rand(dof*2*traj_par.N,1);
     optns_pttrnSrch = optimoptions('patternsearch');
     optns_pttrnSrch.Display = 'iter';
     optns_pttrnSrch.StepTolerance = 1e-1;
@@ -66,7 +76,7 @@ elseif strcmp(optmznAlgorithm, 'ga')
     optns_ga.InitialPopulationRange = [-100; 100];
     optns_ga.SelectionFcn = 'selectionroulette';
 
-    [x,fval] = ga(@(x)traj_cost_lgr(x,traj_par,baseQR), 6*2*traj_par.N,...
+    [x,fval] = ga(@(x)traj_cost_lgr(x,traj_par,baseQR), dof*2*traj_par.N,...
                   A, b, Aeq, beq, lb, ub, ...
                   @(x)traj_cnstr(x,traj_par), optns_ga);
 else
@@ -76,14 +86,14 @@ end
 % ------------------------------------------------------------------------
 % Plotting obtained trajectory
 % ------------------------------------------------------------------------
-ab = reshape(x,[12,traj_par.N]);
-a = ab(1:6,:); % sin coeffs
-b = ab(7:12,:); % cos coeffs
+ab = reshape(x,[dof*2,traj_par.N]);
+a = ab(1:dof,:); % sin coeffs
+b = ab(dof+1:end,:); % cos coeffs
 c_pol = getPolCoeffs(traj_par.T, a, b, traj_par.wf, traj_par.N, traj_par.q0);
 [q,qd,q2d] = mixed_traj(traj_par.t, c_pol, a, b, traj_par.wf, traj_par.N);
 
 out = [traj_par.t', q', qd'];
-hdr = [{'time'}, compose('q%d', 1:6), compose('q%dd', 1:6)]; % t, q1..q6, q1d..q6d
+hdr = [{'time'}, compose('q%d', 1:dof), compose('q%dd', 1:dof)]; % t, q1..q6, q1d..q6d
 writecell([hdr; num2cell(out)], 'output_csv\traj.csv');
 
 
@@ -92,17 +102,18 @@ subplot(3,1,1)
     plot(traj_par.t,q)
     ylabel('$q$','interpreter','latex')
     grid on
-    legend('q1','q2','q3','q4','q5','q6')
+    % legend('q1','q2','q3','q4','q5','q6')
+    legend(compose('q%d',1:dof),'NumColumns',min(dof,10),'Location','eastoutside');
 subplot(3,1,2)
     plot(traj_par.t,qd)
     ylabel('$\dot{q}$','interpreter','latex')
     grid on
-    legend('qd1','qd2','qd3','qd4','qd5','qd6')
+    legend(compose('qd%d',1:dof),'NumColumns',min(dof,10),'Location','eastoutside');
 subplot(3,1,3)
     plot(traj_par.t,q2d)
     ylabel('$\ddot{q}$','interpreter','latex')
     grid on
-    legend('q2d1','q2d2','q2d3','q2d4','q2d5','q2d6')
+    legend(compose('qdd%d',1:dof),'NumColumns',min(dof,10),'Location','eastoutside');
 
 % ----------------------------------------------------------------------
 % Saving parameters of the optimized trajectory

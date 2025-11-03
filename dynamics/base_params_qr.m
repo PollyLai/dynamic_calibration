@@ -1,4 +1,4 @@
-function [pi_lgr_base, baseQR] = base_params_qr(includeMotorDynamics)
+function [pi_lgr_base, baseQR] = base_params_qr(includeMotorDynamics, dof)
 % ----------------------------------------------------------------------
 % In this function QR decomposition is applied to regressor in closed
 % form obtained from Lagrange formulation of dynamics.
@@ -22,31 +22,31 @@ rng('shuffle');
 % ------------------------------------------------------------------------
 % Set limits on posistion and velocities
 % ------------------------------------------------------------------------
-q_min = -pi*ones(6,1);
-q_max = pi*ones(6,1);
-qd_max = 3*pi*ones(6,1);
-q2d_max = 6*pi*ones(6,1); 
+q_min = -pi*ones(dof,1);
+q_max = pi*ones(dof,1);
+qd_max = 3*pi*ones(dof,1);
+q2d_max = 6*pi*ones(dof,1); 
 
 % -----------------------------------------------------------------------
 % Standard dynamics paramters of the robot in symbolic form
 % -----------------------------------------------------------------------
-m = sym('m%d',[6,1],'real');
-hx = sym('h%d_x',[6,1],'real');
-hy = sym('h%d_y',[6,1],'real');
-hz = sym('h%d_z',[6,1],'real');
-ixx = sym('i%d_xx',[6,1],'real');
-ixy = sym('i%d_xy',[6,1],'real');
-ixz = sym('i%d_xz',[6,1],'real');
-iyy = sym('i%d_yy',[6,1],'real');
-iyz = sym('i%d_yz',[6,1],'real');
-izz = sym('i%d_zz',[6,1],'real');
-im = sym('im%d',[6,1],'real');
+m = sym('m%d',[dof,1],'real');
+hx = sym('h%d_x',[dof,1],'real');
+hy = sym('h%d_y',[dof,1],'real');
+hz = sym('h%d_z',[dof,1],'real');
+ixx = sym('i%d_xx',[dof,1],'real');
+ixy = sym('i%d_xy',[dof,1],'real');
+ixz = sym('i%d_xz',[dof,1],'real');
+iyy = sym('i%d_yy',[dof,1],'real');
+iyz = sym('i%d_yz',[dof,1],'real');
+izz = sym('i%d_zz',[dof,1],'real');
+im = sym('im%d',[dof,1],'real');
 
 % Load parameters attached to the end-effector
 syms ml hl_x hl_y hl_z il_xx il_xy il_xz il_yy il_yz il_zz      real 
 
 % Vector of symbolic parameters
-for i = 1:6
+for i = 1:dof
     if includeMotorDynamics
         pi_lgr_sym(:,i) = [ixx(i),ixy(i),ixz(i),iyy(i),iyz(i),izz(i),...
                            hx(i),hy(i),hz(i),m(i),im(i)]';
@@ -64,27 +64,34 @@ pi_lgr_sym = reshape(pi_lgr_sym, [nLnkPrms*nLnks, 1]);
 % -----------------------------------------------------------------------
 % Get observation matrix of identifiable paramters
 W = [];    
+% 25 for links=6
 for i = 1:25
-    q_rnd = q_min + (q_max - q_min).*rand(6,1);
-    qd_rnd = -qd_max + 2*qd_max.*rand(6,1);
-    q2d_rnd = -q2d_max + 2*q2d_max.*rand(6,1);
+    q_rnd = q_min + (q_max - q_min).*rand(dof,1);
+    qd_rnd = -qd_max + 2*qd_max.*rand(dof,1);
+    q2d_rnd = -q2d_max + 2*q2d_max.*rand(dof,1);
     
     if includeMotorDynamics
-        Y = regressorWithMotorDynamics(q_rnd,qd_rnd,q2d_rnd);
+        Y = regressorWithMotorDynamics(q_rnd,qd_rnd,q2d_rnd, dof);
     else
         Y = full_regressor_UR10E(q_rnd,qd_rnd,q2d_rnd);
     end
     W = vertcat(W,Y);
+    fprintf("W size = [%d %d], class = %s\n", size(W), class(W));   % Polly
+
 end
 
 % QR decomposition with pivoting: W*E = Q*R
 %   R is upper triangular matrix
 %   Q is unitary matrix
-%   E is permutation matrix
+%   E is permuta tion matrix
 [Q, R, E] = qr(W);
+fprintf("Q size = [%d %d], class = %s\n", size(Q), class(Q));   % Polly
+fprintf("R size = [%d %d], class = %s\n", size(R), class(R));   % Polly
+fprintf("E size = [%d %d], class = %s\n", size(E), class(E));   % Polly
 
-% matrix W has rank bb which is number number of base parameters 
+% % matrix W has rank bb which is number number of base parameters 
 bb = rank(W);
+fprintf("bb = [%d]\n", bb);   % Polly
 
 % R = [R1 R2; 
 %      0  0]
@@ -97,8 +104,11 @@ beta(abs(beta)<sqrt(eps)) = 0; % get rid of numerical errors
 % W2 = W1*beta
 
 % Make sure that the relation holds
+
 W1 = W*E(:,1:bb);
 W2 = W*E(:,bb+1:end);
+fprintf("W1 size = [%d %d], class = %s\n", size(W1), class(W2));   % Polly
+fprintf("W2 size = [%d %d], class = %s\n", size(W2), class(W2));   % Polly
 assert(norm(W2 - W1*beta) < 1e-6,... 
         'Found realationship between W1 and W2 is not correct\n');
 
@@ -121,5 +131,4 @@ baseQR.numberOfBaseParameters = bb;
 baseQR.permutationMatrix = E;
 baseQR.beta = beta;
 baseQR.motorDynamicsIncluded = includeMotorDynamics;
-
 
