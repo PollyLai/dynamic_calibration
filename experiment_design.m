@@ -1,7 +1,7 @@
 % ---------------------------------------------------------------------
 % In this script trajectory optimization otherwise called experiment
 % design for dynamic paramters identification is carried out. 
-% 
+%                           
 % First, specify cost function (traj_cost_lgr) and constraints 
 % (traj_cnstr) for the optimziation. Then choose oprimization algorithm and
 % specify trajectory parameters (duration, fundamental frequency, number of 
@@ -23,16 +23,18 @@ include_motor_dynamics = 1;
 optmznAlgorithm = 'patternsearch';
 
 % Trajectory parameters
-traj_par.T = 25;          % period of signal
+% traj_par.T = 25;          % period of signal
+traj_par.T = 10;          % period of signal
 traj_par.wf = 2*pi/traj_par.T;    % fundamental frequency
-traj_par.t_smp = 2e-1;   % sampling time
+% traj_par.t_smp = 2e-1;   % sampling time
+traj_par.t_smp = 1e-2;   % sampling time
 traj_par.t = 0:traj_par.t_smp:traj_par.T;  % time
 traj_par.N = 7;          % number of harmonics
 traj_par.q0 = deg2rad([0 -90 0 -90 0 0 ]');
 % Use different limit for positions for safety
 traj_par.q_min = -deg2rad([180  180  100   180  90   90]');
 traj_par.q_max =  deg2rad([180  0    100   0    90   90]');
-traj_par.qd_max = qd_max;
+traj_par.qd_max = 3*pi*ones(6,1);
 traj_par.q2d_max = [2 1 1 1 1 2.5]';
 
 %  ----------------------------------------------------------------------
@@ -79,6 +81,11 @@ a = ab(1:6,:); % sin coeffs
 b = ab(7:12,:); % cos coeffs
 c_pol = getPolCoeffs(traj_par.T, a, b, traj_par.wf, traj_par.N, traj_par.q0);
 [q,qd,q2d] = mixed_traj(traj_par.t, c_pol, a, b, traj_par.wf, traj_par.N);
+
+out = [traj_par.t', q', qd'];
+hdr = [{'time'}, compose('q%d', 1:6), compose('q%dd', 1:6)]; % t, q1..q6, q1d..q6d
+writecell([hdr; num2cell(out)], 'output_csv\traj.csv');
+
 
 figure
 subplot(3,1,1)

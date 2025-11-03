@@ -111,7 +111,7 @@ elseif isequal(subs.type,'{}')
         return
     end
     
-    if self.model.options.usex0
+    if self.model.options.warmstart
         if nargout < 5
             warning('If you intend to use initial guesses, you must use a fifth output as [sol,problem,~,~,P] = P(p)');
         end
@@ -164,7 +164,7 @@ elseif isequal(subs.type,'{}')
         for i = 1:length(subs.subs)
             dimBlocks(i) = numel(subs.subs{i}) / prod(self.diminOrig{i});
         end
-        if any(dimBlocks)>1 && any(dimBlocks==0)
+        if any(dimBlocks>1) && any(dimBlocks==0)
             error('Blocked data in partial instantiation is not possible');
         end
         if all(dimBlocks)
@@ -184,7 +184,7 @@ elseif isequal(subs.type,'{}')
         
         left = ones(1,length(subs.subs));
         aux = [];
-        aux2 = [];
+        % aux2 = [];
         suppliedData = [];
         for i = 1:nBlocks
             aux2 = [];
@@ -299,7 +299,11 @@ elseif isequal(subs.type,'{}')
             self.model.evalVariables = [];
             for k = 1:length(self.model.evalMap)
                 self.model.evalMap{k}.computes = find(self.model.evalMap{k}.computes == keptvariablesIndex);
-                self.model.evalMap{k}.variableIndex = find(self.model.evalMap{k}.variableIndex == keptvariablesIndex);
+                temp = [];
+                for j = 1:length(self.model.evalMap{k}.variableIndex)
+                    temp = [temp find(self.model.evalMap{k}.variableIndex(j) == keptvariablesIndex)];
+                end
+                self.model.evalMap{k}.variableIndex = temp;
                 self.model.evalVariables = [self.model.evalVariables self.model.evalMap{k}.computes];
             end                                         
             self.model.evalVariables = sort(self.model.evalVariables);            
@@ -309,10 +313,15 @@ elseif isequal(subs.type,'{}')
         % presolve has benefits when the are stuff like log
         self.model.presolveequalities = length(self.model.evalMap) > 0;
         if ~self.model.infeasible
-            if self.model.options.usex0 && ~isempty(self.lastsolution)
-                self.model.x0 = zeros(length(self.model.c),1);
-                self.model.x0 = self.lastsolution;
-            elseif ~self.model.options.usex0
+            if self.model.options.warmstart
+                if ~isempty(self.lastsolution)
+                    self.model.x0 = zeros(length(self.model.c),1);
+                    self.model.x0 = self.lastsolution;
+                end
+                if ~isempty(self.restartInfo)
+                    self.model.restartInfo = self.restartInfo;
+                end
+            elseif ~self.model.options.warmstart
                 self.model.x0 = [];
             end
             if NoSolve
@@ -323,14 +332,24 @@ elseif isequal(subs.type,'{}')
                 varargout{1} = self;
                 return
             else
-                eval(['output = ' self.model.solver.call '(self.model);']);
+                output = feval( self.model.solver.call, self.model );
             end
+
+            self.restartInfo = [];
             
-            if output.problem == 0 && self.model.options.usex0
+            if output.problem == 0 && self.model.options.warmstart
                 self.lastsolution = output.Primal;
+                if isfield( output, 'restartInfo' )
+                    self.restartInfo = output.restartInfo;
+                end
             end
             x = self.instatiatedvalues;
-            x(ismember(self.orginal_usedvariables,self.model.used_variables)) = output.Primal;
+            if isempty(output.Primal)
+                v = find(ismember(self.orginal_usedvariables,self.model.used_variables));
+                x(v) = nan(length(v),1);
+            else
+                x(ismember(self.orginal_usedvariables,self.model.used_variables)) = output.Primal;
+            end
             output.Primal = x;
             
         else
@@ -361,7 +380,9 @@ elseif isequal(subs.type,'{}')
                 % problem
                 output.Primal = [nan;output.Primal];
                 assign(self.output.z,output.Primal(1+self.map));
-                assign(self.input.expression,thisData);
+                if ~isempty(thisData)
+                    assign(self.input.expression,thisData);
+                end
                 u = [u reshape(double(self.output.expression),self.dimout)];
             end
         end
@@ -374,7 +395,7 @@ elseif isequal(subs.type,'{}')
     end
     if length(self.dimoutOrig)>1
         % top = 1;
-        realDimOut = self.dimoutOrig;
+        % realDimOut = self.dimoutOrig;
         allu = cell(1, length(self.dimoutOrig));
         for k = 1:nBlocks
             top = 1;

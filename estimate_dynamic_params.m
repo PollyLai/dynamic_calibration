@@ -81,7 +81,7 @@ function [Tau, Wb] = buildObservationMatrices(idntfcnTrjctry, baseQR, drvGains)
         Ybi = [Yi*E1, Yfrctni];
 
         Wb = vertcat(Wb, Ybi);
-        Tau = vertcat(Tau, diag(drvGains)*idntfcnTrjctry.i_fltrd(i,:)');
+        Tau = vertcat(Tau, idntfcnTrjctry.i_fltrd(i,:)');
     end
 end
 
@@ -119,8 +119,8 @@ function [pib_SDP, pifrctn_SDP, pi_full] = physicallyConsistentEstimation(Tau, W
 
     cnstr = [];
     for i = 1:6
-        cnstr = [cnstr, pii(mass_indexes(i))> 0, ...
-                    pii(mass_indexes(i)) < massUpperBound(i)];    
+        cnstr = [cnstr, pii(mass_indexes(i))>= 0, ...
+                    pii(mass_indexes(i)) <= massUpperBound(i)];    
     end
 
     if physicalConsistency
@@ -133,7 +133,7 @@ function [pib_SDP, pifrctn_SDP, pi_full] = physicallyConsistentEstimation(Tau, W
             Di = [0.5*trace(link_inertia_i)*eye(3) - link_inertia_i, ...
                     frst_mmnt_i; frst_mmnt_i', pii(i+9)];
 
-            cnstr = [cnstr, Di>0, pii(i+10)>0];
+            cnstr = [cnstr, Di>=0, pii(i+10)>=0];
         end
     else
         for i = 1:11:66
@@ -144,20 +144,23 @@ function [pib_SDP, pifrctn_SDP, pi_full] = physicallyConsistentEstimation(Tau, W
             frst_mmnt_i = vec2skewSymMat(pii(i+6:i+8));
 
             Di = [link_inertia_i, frst_mmnt_i'; frst_mmnt_i, pii(i+9)*eye(3)];
-            cnstr = [cnstr, Di>0, pii(i+10)>0];
+            cnstr = [cnstr, Di>=0, pii(i+10)>=0];
         end
     end
 
     % Feasibility constraints on the friction prameters 
     for i = 1:6
-       cnstr = [cnstr, pi_frctn(3*i-2)>0, pi_frctn(3*i-1)>0];  
+       cnstr = [cnstr, pi_frctn(3*i-2)>=0, pi_frctn(3*i-1)>=0];  
     end
 
     % Defining pbjective function
     obj = norm(Tau - Wb*[pi_b; pi_frctn]);
 
     % Solving sdp problem
-    sol2 = optimize(cnstr, obj, sdpsettings('solver','sdpt3'));
+    sol2 = optimize(cnstr, obj, sdpsettings('solver','sdpt3','sdpa.maxIteration',1000));
+    % sol2 = optimize(cnstr, obj, sdpsettings('solver', 'sedumi', 'sedumi.eps', 1e-20, ...
+    %             'sedumi.cg.qprec', 1, 'sedumi.cg.maxiter', 49, ...
+    %             'sedumi.stepdif', 2));
 
     pib_SDP = value(pi_b); % variables for base paramters
     pifrctn_SDP = value(pi_frctn);

@@ -47,7 +47,8 @@ end
 
 % Plot measured torques against predicted ones
 for i = 1:6
-    figure
+    f = figure('Theme', 'light'); % Forces light theme
+    f.Color = [1, 1, 1]; % White background
     hold on
     plot(vldtnTrjctry.t, tau_msrd(i,:), 'LineWidth', 1.2)
     plot(vldtnTrjctry.t, tau_pred(i,:), 'LineWidth', 1)

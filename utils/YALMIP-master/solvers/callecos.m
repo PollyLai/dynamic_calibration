@@ -41,9 +41,9 @@ if nnz(cones.q) > 0
 end
 if nnz(cones.ep) > 0
     model.dims.e = cones.ep;
-    tempG = model.G(1:model.dims.l+sum(cones.q),:);
-    temph = model.h(1:model.dims.l+sum(cones.q));
-    top = 1+model.dims.l+sum(cones.q);
+    tempG = model.G(1:cones.l+sum(cones.q),:);
+    temph = model.h(1:cones.l+sum(cones.q));
+    top = 1+cones.l+sum(cones.q);
     for i = 1:model.dims.e
         tempG = [tempG;model.G(top + [0;2;1],:)];
         temph = [temph;model.h(top + [0;2;1],:)];
@@ -96,12 +96,10 @@ switch info.exitflag
     case -7
         problem = 9;
     case {10,11}
-        problem = 3;
+        problem = 4;
     otherwise
         problem = 9;
 end
-
-infostr = yalmiperror(problem,yalmipmodel.solver.tag);
 
 % Save ALL data sent to solver
 if options.savesolverinput
@@ -122,4 +120,4 @@ else
 end
 
 % Standard interface 
-output = createOutputStructure(Primal,Dual,[],problem,infostr,solverinput,solveroutput,solvertime);
+output = createOutputStructure(Primal,Dual,[],problem,yalmipmodel.solver.tag,solverinput,solveroutput,solvertime);

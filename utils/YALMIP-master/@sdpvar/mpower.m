@@ -1,5 +1,4 @@
 function y = mpower(x,d)
-%MPOWER (overloaded)
 
 if (numel(d)>1) || (size(x,1) ~= size(x,2))
    error('Inputs must be a scalar and a square matrix. To compute elementwise POWER, use POWER (.^) instead.');
@@ -24,15 +23,14 @@ if isa(d,'sdpvar')
             end
         end
     end
-    d = flush(d);d.conicinfo = [0 0];
+    d.conicinfo = [0 0];
     y = power_internal1(d,x);
     if isa(y,'sdpvar')
         y.extra.createTime = definecreationtime;
+        y.extra.opname='';
     end
     return
 end
-
-x = flush(x);
     
 % Trivial cases
 if d==0
@@ -43,8 +41,13 @@ if d==1
     y = x;
     return
 end
+if isnan(d)
+	disp('You have NaNs in model (<a href="yalmip.github.io/naninmodel">learn to debug</a>)')
+	error('NaN power makes no sense.');
+end
+    
 
-% Check for special case norm(x)^2 which many users try to do
+% Check for special case norm(x)^2 and abs(x)^2 which many users try to do
 if d==2
     if length(x)==1
         base = getbase(x);
@@ -56,8 +59,19 @@ if d==2
                     z = reshape(model.arg{1},[],1);
                     y = real(z'*z);
                     y.extra.createTime = definecreationtime;
+                    y.extra.opname='';
+                    return
+                else
+                    y = graph_square(x);
                     return
                 end
+            elseif strcmp(x.extra.opname,'abs')
+                model = yalmip('extstruct',getvariables(x));
+                z = model.arg{1};
+                y = (z.*conj(z));
+                y.extra.createTime = definecreationtime;
+                y.extra.opname='';
+                return                
             end
         end
     end
@@ -85,7 +99,7 @@ if (ceil(d)-d>0) | (d<0)
             else
                 y = recover(previous_var);
             end
-        elseif  (size(base,2) == 2) & base(1)==0
+        elseif  (size(base,2) == 2) & base(1)==0 & base(2) > 0
             % Something like a*t^-d
             y = base(2)^d*recover(getvariables(x))^d;
         else
@@ -94,6 +108,7 @@ if (ceil(d)-d>0) | (d<0)
         end
     end
     y.extra.createTime = definecreationtime;
+    y.extra.opname='';
     return
 end
 
@@ -143,7 +158,10 @@ else %Integer power of scalar
                 end
         end
     end
-    y.extra.createTime = definecreationtime;
+    if isa(y,'sdpvar')
+        y.extra.createTime = definecreationtime;
+        y.extra.opname='';
+    end
 end
 
 

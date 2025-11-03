@@ -1,8 +1,32 @@
 function output = callgurobi(interfacedata)
 
+% Gurobi 8 does not like seeing options for gurobi 9
+if ~isempty(interfacedata.options.gurobi)
+    if isequal(interfacedata.options.gurobi,interfacedata.options.default.gurobi)
+        interfacedata.options.gurobi = [];
+    end
+end
+         
 options = interfacedata.options;
-nOriginal = length(interfacedata.c);
-model = yalmip2gurobi(interfacedata);
+% Keep track if we add variables to normalize SOCPs
+xOriginal = interfacedata.variabletype == 0;
+model = yalmip2gurobinonlinear(interfacedata);
+
+if isfield( interfacedata, 'restartInfo' )
+    restartInfo = interfacedata.restartInfo;
+    if isfield( restartInfo, 'vbasis' )
+        model.vbasis = restartInfo.vbasis;
+    end
+    if isfield( restartInfo, 'cbasis' )
+        model.cbasis = restartInfo.cbasis;
+    end
+    if isfield( restartInfo, 'pstart' )
+        model.pstart = restartInfo.pstart;
+    end
+    if isfield( restartInfo, 'dstart' )
+        model.dstart = restartInfo.dstart;
+    end
+end
 
 if interfacedata.options.savedebug
     save gurobidebug model
@@ -22,12 +46,18 @@ if isfield(result,'x')
             x(model.NegativeSemiVar) = -x(model.NegativeSemiVar);
         end
     end
-    x = x(1:nOriginal);
+    x = x(xOriginal);
 else
-    x = zeros(nOriginal,1);
+    x = zeros(nnz(xOriginal),1);
 end
 
-problem = 0;
+% On nonconvex models, monomials are included in the list of variables
+% simply set those terms to zero, not used anyway
+xtemp = zeros(length(interfacedata.c),1);
+xtemp(find(interfacedata.variabletype == 0)) = x;
+x = xtemp;
+
+% problem = 0;
 qcDual = [];
 if isfield(result,'pi')
     % Gurobi has reversed sign-convention
@@ -82,17 +112,20 @@ else
 	solveroutput = [];
 end
 
-infostr = yalmiperror(problem,interfacedata.solver.tag);
-
 % Standard interface 
-output = createOutputStructure(x,D_struc,[],problem,infostr,solverinput,solveroutput,solvertime);
+output = createOutputStructure(x,D_struc,[],problem,interfacedata.solver.tag,solverinput,solveroutput,solvertime);
 output.qcDual      = qcDual;
 
+restartInfo = struct;
+if isfield( result, 'vbasis' )
+    restartInfo.vbasis = result.vbasis;
+elseif isfield( result, 'x' )
+    restartInfo.pstart = result.x;
+end
+if isfield( result, 'cbasis' )
+    restartInfo.cbasis = result.cbasis;
+elseif isfield( result, 'pi' )
+    restartInfo.dstart = result.pi;
+end
 
-
-
-
-
-
-
-
+output.restartInfo = restartInfo;

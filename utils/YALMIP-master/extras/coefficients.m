@@ -5,8 +5,11 @@ function [base,v] = coefficients(p,x,vin)
 %   of a scalar polynomial p(x) = c'*v(x)
 %
 %   c = COEFFICIENTS(p,x) extracts the all coefficents
-%   of a matrix polynomial.
-
+%   of a matrix polynomial, in a long list
+%
+%   [c,v] = COEFFICIENTS(p,x) extracts the all coefficents
+%   of a matrix polynomial with a common basis, vectorized c
+%
 %
 %   INPUT
 %    p : SDPVAR object
@@ -23,6 +26,13 @@ function [base,v] = coefficients(p,x,vin)
 %    sdisplay([c v]) 
 %
 %   See also SDPVAR
+
+if nargin==2 && nargout == 2 && numel(p)>1
+    % Slow, but matrix case now fully supported at least
+    v = monolist(x,degree(p));
+    base = fullcoefficients(p,x,v);
+    return
+end
 
 if isa(p,'double')
     base = p(:);
@@ -122,18 +132,26 @@ end
 if isequal(v,vin)
     return
 else
-    for i = 1:length(v)
-        if isa(v(i),'double')
-            si(i) = 0;
-        else
-            si(i) = getvariables(v(i));
+    if isequal(getbase(v), [1 spalloc(1,length(v)-1,0);spalloc(length(v)-1,1,0) speye(length(v)-1)])
+        si = [0 getvariables(v)];
+    else
+        for i = 1:length(v)
+            if isa(v(i),'double')
+                si(i) = 0;
+            else
+                si(i) = getvariables(v(i));
+            end
         end
     end
-    for i = 1:length(vin)
-        if isa(vin(i),'double')
-            vi(i) = 0;
-        else
-            vi(i) = getvariables(vin(i));
+    if isequal(getbase(vin), [1 spalloc(1,length(vin)-1,0);spalloc(length(vin)-1,1,0) speye(length(vin)-1)])
+        vi = [0 getvariables(vin)];
+    else
+        for i = 1:length(vin)
+            if isa(vin(i),'double')
+                vi(i) = 0;
+            else
+                vi(i) = getvariables(vin(i));
+            end
         end
     end
 
@@ -164,11 +182,12 @@ function p_base_parametric = parameterizedbase(p,z, params,ParametricIndicies,ex
 % Check for linear parameterization
 parametric_basis = exponent_p(:,ParametricIndicies);
 %if all(sum(parametric_basis,2)==0)
-if all(all(parametric_basis==0))
+if nnz(parametric_basis)==0%all(all(parametric_basis==0))
     p_base_parametric = full(p_base(:));
     return
 end
-if all(ismember(parametric_basis,[0 1])) & all(sum(parametric_basis,2)<=1)%all(sum(parametric_basis,2)<=1)
+[i,j,s] = find(parametric_basis);
+if all(s == 1) & all(sum(parametric_basis,2)<=1)%all(sum(parametric_basis,2)<=1)
     p_base_parametric = full(p_base(:));
     n = length(p_base_parametric);
     ii = [];
@@ -224,3 +243,11 @@ else
     end
     p_base_parametric = stackcell(sdpvar(1,1),xx)';
 end
+
+function c = fullcoefficients(p,x,v)
+c = [];
+for i = 1:length(p)
+	[ci,vi] = coefficients(p(i),x,v);
+	c = [c;ci(:)'];
+end
+    

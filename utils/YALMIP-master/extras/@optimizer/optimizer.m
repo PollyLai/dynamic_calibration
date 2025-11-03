@@ -6,10 +6,10 @@ function sys = optimizer(Constraints,Objective,options,x,u)
 %   x, returning the optimal value of the expression u.
 %
 %   OPTIMIZER works most efficiently if the varying data x enters the
-%   optmization problem affinely. For the general cae, much more logic has
+%   optmization problem affinely. For the general case, much more logic has
 %   to be applied when instantiating the numerical data for a parametric
 %   value, and when compiling the model, it is harder fpr YALMIP to
-%   understand what kind of model it will be once th parameters are fixed.
+%   understand what kind of model it will be once the parameters are fixed.
 %
 %   By default, display is turned off (since optimizer is used in
 %   situations where many problems are solved repeatedly. To turn on
@@ -113,7 +113,7 @@ if isa(u,'cell')
     end
     u = uvec;
 else
-    if is(u,'complex')
+    if (isa(u,'sdpvar') || isa(u,'ndsdpvar')) && is(u,'complex')
         complexOutput(1) = 1;
         u = [real(u);imag(u)];
     else
@@ -201,20 +201,33 @@ end
 
 % Try to set up an optimal way to compute the output
 base = getbase(u);
-if is(u,'linear') & all(sum(base | base,2) == 1) & all(sum(base,2)==1) & all(base(:,1)==0)
-    % This is just a vecotr of variables
+if isempty(u) || (is(u,'linear') & all(sum(base | base,2) == 1) & all(sum(base,2)==1) & all(base(:,1)==0))
+    % This is just a vector of variables
     z = [];
     map = [];
     uvec = u(:);
-    for i = 1:length(uvec)
-        var = getvariables(uvec(i));
-        mapIndex = find(var == model.used_variables);
-        if ~isempty(mapIndex)
-            map = [map;mapIndex];
-        else
-            map = [map;0];
+    % Setup to do fast getvariables(uvec(i))
+    U = getbase(uvec);
+    Uvar = getvariables(uvec);
+    U = U(:,2:end);
+    [ii,jj,ss] = find(U');
+    if 0
+        for i = 1:length(uvec)
+            var = Uvar(ii(i));
+            mapIndex = find(var == model.used_variables);
+            if ~isempty(mapIndex)
+                map = [map;mapIndex];
+            else
+                map = [map;0];
+            end
         end
+    else
+        vars = Uvar(ii);
+        [isMember, mapIndex] = ismember(vars, model.used_variables);
+        map = zeros(length(vars), 1);
+        map(isMember) = mapIndex(isMember);
     end
+
 else
     % Some expression which we will use assign and double to evaluate
     vars = depends(u);
@@ -231,7 +244,7 @@ else
     end        
 end
 
-if isempty(map) | min(size(map))==0
+if ~isempty(u) && (isempty(map) | min(size(map))==0)
     error('The requested decision variable (argument 4) is not in model');
 end
 
@@ -257,6 +270,7 @@ sys.input.expression = x;
 sys.output.expression = u;
 sys.output.z = z;
 sys.lastsolution = [];
+sys.restartInfo = [];
 sys.ParametricSolution = [];
 sys.model.infeasible = 0;
 % This is not guaranteed to give the index in the order the variables where

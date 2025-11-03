@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot name="fixed_bipedal">
+  
+  <joint name="L_Ankle_Pitch" type="revolute">
+    <origin xyz="0. 0. 0." rpy="0. 0. 0."/>
+    <parent link="bipedal_floating_l_ankle_1"/>
+    <child link="bipedal_floating_l_shank_1"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.3490659" upper="1.0471976" effort="15." velocity="44.9999997"/>
+  </joint>
+  <joint name="L_Ankle_Roll" type="revolute">
+    <origin xyz="-0.0154236 0.0996533 0.0259289" rpy="-0.0000478 0.008336 -0.0074564"/>
+    <parent link="bipedal_floating"/>
+    <child link="bipedal_floating_l_ankle_1"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-0.4363323" upper="0.4363319" effort="15." velocity="44.9999997"/>
+  </joint>
+  <joint name="L_Hip_Pitch" type="revolute">
+    <origin xyz="-0.1483434 -0.019 0.162463 " rpy="0. -0.7400002 -0.0000002"/>
+    <parent link="bipedal_floating_l_thigh_1"/>
+    <child link="bipedal_floating_l_hip_pitch_1"/>
+    <axis xyz="0. 1. 0."/>
+    <limit lower="-1.0471976" upper="0.5235988" effort="15." velocity="44.9999997"/>
+  </joint>
+  <joint name="L_Hip_Roll" type="revolute">
+    <origin xyz="-0.007 -0. 0.0415" rpy="0. -0. -0."/>
+    <parent link="bipedal_floating_l_hip_yaw_1"/>
+    <child link="bipedal_floating_base_link"/>
+    <axis xyz="1. 0. 0."/>
+    <limit lower="-0.523599" upper="0.523599" effort="15." velocity="44.9999997"/>
+  </joint>
+  <joint name="L_Hip_Yaw" type="revolute">
+    <origin xyz="0.0198889 -0.032 0.051278 " rpy="0.0000001 0.3699999 0. "/>
+    <parent link="bipedal_floating_l_hip_pitch_1"/>
+    <child link="bipedal_floating_l_hip_yaw_1"/>
+    <axis xyz="0. 0. 1."/>
+    <limit lower="-0.523599" upper="0.523599" effort="15." velocity="44.9999997"/>
+  </joint>
+  <joint name="L_Knee_Pitch" type="revolute">
+    <origin xyz="0.0923703 -0. 0.2382184" rpy="0. 0.3699057 -0. "/>
+    <parent link="bipedal_floating_l_shank_1"/>
+    <child link="bipedal_floating_l_thigh_1"/>
+    <axis xyz="0. 1. 0."/>
+    <limit lower="-0.6981317" upper="0.5235988" effort="15." velocity="44.9999997"/>
+  </joint>
+  <joint name="R_Hip_Pitch" type="revolute">
+    <origin xyz="-0. -0.032 -0.055" rpy="0. -0.37 -0. "/>
+    <parent link="bipedal_floating_r_hip_pitch_1"/>
+    <child link="bipedal_floating_r_thigh_1"/>
+    <axis xyz="0. 1. 0."/>
+    <limit lower="-1.0471976" upper="0.5235988" effort="15." velocity="44.9999997"/>
+  </joint>
+  <joint name="R_Hip_Roll" type="revolute">
+    <origin xyz="-0. -0.098 -0.0000001" rpy="0. 0. 0."/>
+    <parent link="bipedal_floating_base_link"/>
+    <child link="bipedal_floating_r_hip_yaw_1"/>
+    <axis xyz="1. 0. 0."/>
+    <limit lower="-0.523599" upper="0.523599" effort="15." velocity="44.9999997"/>
+  </joint>
+  <joint name="R_Hip_Yaw" type="revolute">
+    <origin xyz="0.007 -0. -0.0414999" rpy="-0. -0. -0."/>
+    <parent link="bipedal_floating_r_hip_yaw_1"/>
+    <child link="bipedal_floating_r_hip_pitch_1"/>
+    <axis xyz="0. 0. 1."/>
+    <limit lower="-0.523599" upper="0.523599" effort="15." velocity="44.9999997"/>
+  </joint>
+  <joint name="R_Knee_Pitch" type="revolute">
+    <origin xyz="-0. -0.019 -0.22 " rpy="0. 0.7400001 0. "/>
+    <parent link="bipedal_floating_r_thigh_1"/>
+    <child link="bipedal_floating_r_shank_1"/>
+    <axis xyz="0. 1. 0."/>
+    <limit lower="-0.6981317" upper="0.5235988" effort="15." velocity="44.9999997"/>
+  </joint>
+  <joint name="FixedJoint" type="fixed">
+    <origin xyz="0. 0. 0." rpy="0. -0. 0."/>
+    <parent link="bipedal_floating_r_ankle_1"/>
+    <child link="bipedal_floating_r_foot_1"/>
+  </joint>
+  <joint name="FixedJoint0" type="fixed">
+    <origin xyz="-0.0000001 -0. -0.2554999" rpy="-0. -0.37 0. "/>
+    <parent link="bipedal_floating_r_shank_1"/>
+    <child link="bipedal_floating_r_ankle_1"/>
+  </joint>
+  <link name="bipedal_floating">
+    <visual>
+      <origin xyz="-0.0155553 0.0996535 0.0101295" rpy="-0.0000478 0.008336 -0.0074564"/>
+      <geometry>
+        <mesh filename="file://C:/Users/arran/Desktop/urdf/meshes/bipedal_floating_l_foot_1_Cube_01.obj" scale="1. 1. 1."/>
+      </geometry>
+    </visual>
+    <visual>
+      <origin xyz="-0.0233855 -0.0002914 -0.000007 " rpy="-0.0000478 0.008336 -0.0074564"/>
+      <geometry>
+        <mesh filename="file://C:/Users/arran/Desktop/urdf/meshes/bipedal_floating_l_foot_1_visuals_l_foot_1_mesh.obj" scale="1. 1. 1."/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.0155553 0.0996535 0.0101295" rpy="-0.0000478 0.008336 -0.0074564"/>
+      <geometry>
+        <mesh filename="file://C:/Users/arran/Desktop/urdf/meshes/bipedal_floating_l_foot_1_Cube_01.obj" scale="1. 1. 1."/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="bipedal_floating_base_link">
+    <inertial>
+      <origin xyz="0.0044488 0. 0.6292536" rpy="0. 0. 0."/>
+      <mass value="0.1903033"/>
+      <inertia ixx="0.00052" ixy="0." ixz="0.000053" iyy="0.000694" iyz="0." izz="0.000957"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0010199 -0.048984 0.02003 " rpy="-0.0000136 -0.0082415 0.0074564"/>
+      <geometry>
+        <mesh filename="file://C:/Users/arran/Desktop/urdf/meshes/bipedal_floating_base_link_Cube.obj" scale="1. 1. 1."/>
+      </geometry>
+    </visual>
+    <visual>
+      <origin xyz="-0. -0.049 -0.5980001" rpy="0. 0. 0."/>
+      <geometry>
+        <mesh filename="file://C:/Users/arran/Desktop/urdf/meshes/bipedal_floating_base_link_visuals_base_link_mesh.obj" scale="1. 1. 1."/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0010199 -0.048984 0.02003 " rpy="-0.0000136 -0.0082415 0.0074564"/>
+      <geometry>
+        <mesh filename="file://C:/Users/arran/Desktop/urdf/meshes/bipedal_floating_base_link_Cube.obj" scale="1. 1. 1."/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="bipedal_floating_l_ankle_1">
+    <inertial>
+      <origin xyz="0. 0. 0." rpy="0. 0. 0."/>
+      <mass value="0.0048217"/>
+      <inertia ixx="0.001" ixy="0." ixz="0." iyy="0.001" iyz="0." izz="0.001"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.007 -0.1 -0.026" rpy="0. 0. 0."/>
+      <geometry>
+        <mesh filename="file://C:/Users/arran/Desktop/urdf/meshes/bipedal_floating_l_ankle_1_visuals_l_ankle_1_mesh.obj" scale="1. 1. 1."/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="bipedal_floating_l_hip_pitch_1">
+    <inertial>
+      <origin xyz="0. 0.0022492 -0.03225 " rpy="0. 0. 0."/>
+      <mass value="0.0945202"/>
+      <inertia ixx="0.000169" ixy="0." ixz="0." iyy="0.000138" iyz="0.000005" izz="0.000134"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.1878764 -0.081 -0.4650309" rpy="0.0000001 0.3699999 0. "/>
+      <geometry>
+        <mesh filename="file://C:/Users/arran/Desktop/urdf/meshes/bipedal_floating_l_hip_pitch_1_visuals_l_hip_pitch_1_mesh.obj" scale="1. 1. 1."/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="bipedal_floating_l_hip_yaw_1">
+    <inertial>
+      <origin xyz="-0.008686 0.0000107 -0.0010215" rpy="0. 0. 0."/>
+      <mass value="1.3123447"/>
+      <inertia ixx="0.000955" ixy="0." ixz="0.000012" iyy="0.002546" iyz="0." izz="0.002645"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.007 -0.049 -0.5565" rpy="0. -0. -0."/>
+      <geometry>
+        <mesh filename="file://C:/Users/arran/Desktop/urdf/meshes/bipedal_floating_l_hip_yaw_1_visuals_l_hip_yaw_1_mesh.obj" scale="1. 1. 1."/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="bipedal_floating_l_shank_1">
+    <inertial>
+      <origin xyz="0.0049849 0.0000073 -0.0624096" rpy="0. 0. 0."/>
+      <mass value="0.1789021"/>
+      <inertia ixx="0.001648" ixy="0." ixz="-0.000065" iyy="0.001636" iyz="0." izz="0.000064"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.0159262 -0.1 -0.0217107" rpy="0. 0.3699057 -0. "/>
+      <geometry>
+        <mesh filename="file://C:/Users/arran/Desktop/urdf/meshes/bipedal_floating_l_shank_1_visuals_l_shank_1_mesh.obj" scale="1. 1. 1."/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="bipedal_floating_l_thigh_1">
+    <inertial>
+      <origin xyz="0.0016426 0.0133419 -0.0569292" rpy="0. 0. 0."/>
+      <mass value="2.3800001"/>
+      <inertia ixx="0.0131" ixy="-0.000001" ixz="0.000309" iyy="0.010446" iyz="0.000619" izz="0.005641"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.061013 -0.0447322 0.0668203" rpy="0. -0.7400002 -0.0000002"/>
+      <geometry>
+        <box size="0.1 0.04 0.2 "/>
+      </geometry>
+    </visual>
+    <visual>
+      <origin xyz="-0.0827627 0.0403397 0.0906402" rpy="0. -0.7400002 -0.0000002"/>
+      <geometry>
+        <box size="0.1 0.03 0.26"/>
+      </geometry>
+    </visual>
+    <visual>
+      <origin xyz="0.1846428 -0.1 -0.2125989" rpy="0. -0.7400002 -0.0000002"/>
+      <geometry>
+        <mesh filename="file://C:/Users/arran/Desktop/urdf/meshes/bipedal_floating_l_thigh_1_visuals_l_thigh_1_mesh.obj" scale="1. 1. 1."/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.061013 -0.0447322 0.0668203" rpy="0. -0.7400002 -0.0000002"/>
+      <geometry>
+        <box size="0.1 0.04 0.2 "/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0827627 0.0403397 0.0906402" rpy="0. -0.7400002 -0.0000002"/>
+      <geometry>
+        <box size="0.1 0.03 0.26"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="bipedal_floating_r_ankle_1">
+    <inertial>
+      <origin xyz="0. 0. 0." rpy="0. 0. 0."/>
+      <mass value="0.0048217"/>
+      <inertia ixx="0.001" ixy="0." ixz="0." iyy="0.001" iyz="0." izz="0.001"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.007 0.1 -0.026" rpy="0. -0. 0."/>
+      <geometry>
+        <mesh filename="file://C:/Users/arran/Desktop/urdf/meshes/bipedal_floating_r_ankle_1_visuals_r_ankle_1_mesh.obj" scale="1. 1. 1."/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="bipedal_floating_r_foot_1">
+    <inertial>
+      <origin xyz="-0.0071934 0. -0.0220223" rpy="0. 0. 0."/>
+      <mass value="0.1134814"/>
+      <inertia ixx="0.000064" ixy="0." ixz="0.000004" iyy="0.000197" iyz="0." izz="0.000255"/>
+    </inertial>
+    <visual>
+      <origin xyz="0. 0. -0.0164418" rpy="0. 0. 0."/>
+      <geometry>
+        <mesh filename="file://C:/Users/arran/Desktop/urdf/meshes/bipedal_floating_r_foot_1_Cube_02.obj" scale="1. 1. 1."/>
+      </geometry>
+    </visual>
+    <visual>
+      <origin xyz="-0.007 0.1 -0.026" rpy="0. 0. 0."/>
+      <geometry>
+        <mesh filename="file://C:/Users/arran/Desktop/urdf/meshes/bipedal_floating_r_foot_1_visuals_r_foot_1_mesh.obj" scale="1. 1. 1."/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0. 0. -0.0164418" rpy="0. 0. 0."/>
+      <geometry>
+        <mesh filename="file://C:/Users/arran/Desktop/urdf/meshes/bipedal_floating_r_foot_1_Cube_02.obj" scale="1. 1. 1."/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="bipedal_floating_r_hip_pitch_1">
+    <inertial>
+      <origin xyz="0. -0.0022492 -0.03225 " rpy="0. 0. 0."/>
+      <mass value="0.0945202"/>
+      <inertia ixx="0.000169" ixy="0." ixz="0." iyy="0.000138" iyz="-0.000005" izz="0.000134"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.007 0.049 -0.5565" rpy="0. 0. 0."/>
+      <geometry>
+        <mesh filename="file://C:/Users/arran/Desktop/urdf/meshes/bipedal_floating_r_hip_pitch_1_visuals_r_hip_pitch_1_mesh.obj" scale="1. 1. 1."/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="bipedal_floating_r_hip_yaw_1">
+    <inertial>
+      <origin xyz="-0.008686 0.0000107 -0.0010215" rpy="0. 0. 0."/>
+      <mass value="1.3123447"/>
+      <inertia ixx="0.000955" ixy="0." ixz="0.000012" iyy="0.002546" iyz="0." izz="0.002645"/>
+    </inertial>
+    <visual>
+      <origin xyz="0. 0.049 -0.5979999" rpy="-0. -0. -0."/>
+      <geometry>
+        <mesh filename="file://C:/Users/arran/Desktop/urdf/meshes/bipedal_floating_r_hip_yaw_1_visuals_r_hip_yaw_1_mesh.obj" scale="1. 1. 1."/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="bipedal_floating_r_shank_1">
+    <inertial>
+      <origin xyz="0.0049849 0.0000073 -0.0624096" rpy="0. 0. 0."/>
+      <mass value="0.1789021"/>
+      <inertia ixx="0.001648" ixy="0." ixz="-0.000065" iyy="0.001636" iyz="0." izz="0.000064"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.007 0.1 -0.2815" rpy="-0. 0. -0."/>
+      <geometry>
+        <mesh filename="file://C:/Users/arran/Desktop/urdf/meshes/bipedal_floating_r_shank_1_visuals_r_shank_1_mesh.obj" scale="1. 1. 1."/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="bipedal_floating_r_thigh_1">
+    <inertial>
+      <origin xyz="0.0016458 -0.0132535 -0.0566505" rpy="0. 0. 0."/>
+      <mass value="2.3800001"/>
+      <inertia ixx="0.012971" ixy="0.000002" ixz="0.00031" iyy="0.010328" iyz="-0.000581" izz="0.005628"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0. -0.05934 -0.096578" rpy="0.0044332 0.0006463 0.0049702"/>
+      <geometry>
+        <box size="0.1 0.03 0.26"/>
+      </geometry>
+    </visual>
+    <visual>
+      <origin xyz="-0. 0.02573 -0.1292107" rpy="0.0044332 0.0006463 0.0049702"/>
+      <geometry>
+        <box size="0.1 0.04 0.2 "/>
+      </geometry>
+    </visual>
+    <visual>
+      <origin xyz="-0.007 0.081 -0.5015" rpy="0. 0. 0."/>
+      <geometry>
+        <mesh filename="file://C:/Users/arran/Desktop/urdf/meshes/bipedal_floating_r_thigh_1_visuals_r_thigh_1_mesh.obj" scale="1. 1. 1."/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0. -0.05934 -0.096578" rpy="0.0044332 0.0006463 0.0049702"/>
+      <geometry>
+        <box size="0.1 0.03 0.26"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0. 0.02573 -0.1292107" rpy="0.0044332 0.0006463 0.0049702"/>
+      <geometry>
+        <box size="0.1 0.04 0.2 "/>
+      </geometry>
+    </collision>
+  </link>
+</robot>

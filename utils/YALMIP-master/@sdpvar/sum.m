@@ -9,13 +9,22 @@ if length(X.dim)==2
         Y = ones(1,max(X.dim))*reshape(X,[],1);
         return
     end
+    if isequal(sort(I), [1 2]) || isequal(I, 'all')
+        % special case if we sum all elements
+        Y = ones(1,X.dim(1))*X*ones(X.dim(2),1);
+        return
+    end
     switch I
         case 1
             Y = ones(1,X.dim(1))*X;
         case 2
             Y = X*ones(X.dim(2),1);
         otherwise
-            Y = X;
+            if isa(I,'double') && (I>=1) && (I == ceil(I))
+                Y = X;
+            else
+                error('Dimension argument must be a positive integer scalar within indexing range.')
+            end
     end
     return
 end
@@ -54,5 +63,4 @@ Y.dim(2) = size(temp,2);
 % Reset info about conic terms
 Y.conicinfo = [0 0];
 Y.extra.opname = '';
-Y = flush(Y);
 Y = clean(Y);

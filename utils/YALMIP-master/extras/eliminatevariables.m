@@ -50,7 +50,7 @@ keepingthese = model.keepingthese;
 % Look for constraints which evaluate to inf + a'*x + b >= 0
 infinite_monoms = removethese(isinf(monomvalue(removethese)));
 if ~isempty(infinite_monoms)
-    if model.K.l > 0
+    if any(model.K.l)
         A = model.F_struc(model.K.f + 1:model.K.f + model.K.l,1 + infinite_monoms);
         redundant = find(all(A,2));
         model.F_struc(model.K.f + redundant,:)=[];
@@ -70,9 +70,13 @@ if ~isempty(model.F_struc)
     model.F_struc(:,1) = model.F_struc(:,1)+model.F_struc(:,1+removethese)*value;
     model.F_struc(:,1+removethese) = [];
     model.F_struc = model.F_struc*diag(sparse([1;monomgain]));
+else
+    % Clean up 0-dim row
+    model.F_struc = [];
 end
+
 infeasible = 0;
-if model.K.f > 0
+if any(model.K.f)
     candidates = find(~any(model.F_struc(1:model.K.f,2:end),2));
     %candidates = find(sum(abs(model.F_struc(1:model.K.f,2:end)),2) == 0);
     if ~isempty(candidates)
@@ -86,7 +90,7 @@ if model.K.f > 0
         end
     end
 end
-if model.K.l > 0
+if any(model.K.l)
     % Find infeasible constraints
     candidates = find(~any(model.F_struc(model.K.f + (1:model.K.l),2:end),2));
     if ~isempty(candidates)                
@@ -105,10 +109,10 @@ if model.K.l > 0
         model.K.l = model.K.l - length(candidates);        
     end
 end
-if model.K.q(1) > 0
+if any(model.K.q)
     removeqs = [];
     removeRows = [];
-    top = model.K.f + model.K.l + 1;  
+    top = startofSOCPCone(model.K);  
     F_struc = model.F_struc(top:top+sum(model.K.q)-1,:);   
     top = 1;
     if all(any(F_struc(:,2:end),2))
@@ -136,9 +140,9 @@ if model.K.q(1) > 0
         end
     end
 end
-if model.K.s(1) > 0  
+if any(model.K.s)  
     % Nonlinear semidefinite program with parameter
-    top = model.K.f + model.K.l + sum(model.K.q) + 1;
+    top = startofSDPCone(model.K);
     removeqs = [];
     removeRows = [];
     for i = 1:length(model.K.s)
@@ -195,8 +199,10 @@ newmonomtable(removethese,:) = [];
 if ~isequal(newmonomtable,model.precalc.newmonomtable)%~isempty(removethese)
     skipped = [];
     alreadyAdded = zeros(1,size(newmonomtable,1));         
-    [ii,jj,kk,skipped] = stableunique(newmonomtable*model.hashCache(1:size(newmonomtable,2)));   
-    %[ii,jj,kk,skipped] = stableunique(newmonomtable*gen_rand_hash(0,size(newmonomtable,2),1));   
+    %[ii,jj,kk,skipped] = stableunique(newmonomtable*model.hashCache(1:size(newmonomtable,2)));       
+    [ii,jj,kk] = unique(newmonomtable*model.hashCache(1:size(newmonomtable,2)),'stable');
+    skipped = setdiff(1:length(kk),jj);
+
     S = sparse(kk,1:length(kk),1);   
     model.precalc.S = S;
     model.precalc.skipped = skipped;
@@ -237,7 +243,7 @@ model.x0 = zeros(length(model.c),1);
 
 if nnz(model.Q) > 0
     if  model.solver.objective.quadratic.convex == 0 &  model.solver.objective.quadratic.nonconvex == 0
-        error('The objective instantiates as a quadratic after fixing parameters, but this is not directly supported by the solver. YALMIP will not reformulate models if they structurally change in call to optimizer. A typical trick to circumvent this is to define a new set of variable e, use the quadratic function e''e, and add an equality constraint e = something. The SOCP formulation can then be done a-priori by YALMIP.');
+        error('The objective instantiates as a quadratic after fixing parameters, but this is not directly supported by the solver. YALMIP will not reformulate models if they structurally change in call to optimizer. A typical trick to circumvent this is to define a new set of variable e, use the quadratic function e''e, and add an equality constraint e = something. The SOCP formulation can then be done a-priori by YALMIP.Alternatively, use a formulation using norm or cone');
     end
 end
 
@@ -286,7 +292,7 @@ if ~model.solver.objective.sigmonial & any(model.variabletype == 4)
         involved = [involved;find(m ~= fix(m) | m < 0)];
     end
     involved = unique(involved);
-    [lb,ub] = findulb(model.F_struc,model.K,model.lb,model.ub);
+    [lb,ub] = find_lp_bounds(model.F_struc,model.K,model.lb,model.ub);
     if all(lb(involved) == ub(involved))
         % Now add equality constraints to enforce       
         for i = signomials

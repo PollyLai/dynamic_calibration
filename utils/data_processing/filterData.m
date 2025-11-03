@@ -70,6 +70,9 @@ end
 
 
 
+
+
+
 % Functions for plotting
 function plotVelocity(trj)
     figure
@@ -91,3 +94,5 @@ function plotAcceleration(trj)
 end
 
 end
+
+

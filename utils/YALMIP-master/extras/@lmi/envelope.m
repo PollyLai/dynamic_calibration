@@ -7,6 +7,8 @@ function [E,P] = envelope(C,x)
 % x: Optional: The linear variables of interest (projection onto these will be performed)
 % E: Constraint object representing the envelope approximation
 % P: Optional: Polyhedral object representing E (MPT Toolbox object)
+%              (requires a second argument with variables to project
+%              envelope to)
 %
 % Examples
 %
@@ -22,16 +24,20 @@ function [E,P] = envelope(C,x)
 %   plot(E)
 %   xx = (-1:0.01:1);hold on;plot(xx,xx+sin(pi*xx),xx,4-xx.^2)
 %
-% Alternatively, we can create a model which adds the outer approximation
-% cuts for the envelopes of the nonlinear variables, but keep the nonlinear
-% variables, and then plot the projection of the outer approximation,
-% keeping in mind that we now have to relax the nonlinear variables (this
-% is the model which thus would be used in a branch&bound scheme)
+% A polyhedral object in MPT format representing E can be obtained as a
+% second output.
+%
+%   [E,P] = envelope([-1 <= x <= 1,x+sin(pi*x) <= u <= 4-x^2],[x;u]);
+%
+% Alternatively, to avoid an expensive projection,  we can create a model
+% which adds the outer approximation cuts for the envelopes of the
+% nonlinear variables, but keep the nonlinear variables, and then plot the
+% projection of the outer approximation, keeping in mind that we now have
+% to relax the nonlinear variables (this is the model which thus would be
+% used in a branch&bound scheme) 
 %   E = envelope([-1 <= x <= 1,x+sin(pi*x) <= u <= 4-x^2]);
 %   plot(E,[x;u],[],[],sdpsettings('relax',1))
 %   xx = (-1:0.01:1);hold on;plot(xx,xx+sin(pi*xx),xx,4-xx.^2)
-
-% Author Johan Löfberg
 
 [aux1,aux2,aux3,p] = export(C,[],sdpsettings('solver','bmibnb'));
 
@@ -47,7 +53,7 @@ p.EqualityConstraintState = ones(p.K.f,1);
 p.InequalityConstraintState = ones(p.K.l,1);
 p = compile_nonlinear_table(p);
 %p = propagatequadratics(p,inf,-inf);
-p = propagatequadratics(p);
+p = propagate_bounds_from_arbitrary_quadratics(p);
 p.high_monom_model=[];
 p.originalModel = p;
 p = presolveOneMagicRound(p);   
@@ -64,10 +70,15 @@ end
 p = presolveOneMagicRound(p);  
 
 % Copied from solvelower
-p_cut = addBilinearVariableCuts(p);
+p_cut = p;
+p_cut = propagate_bounds_from_monomials(p_cut);
+p_cut = propagate_bounds_from_evaluations(p_cut);
+p_cut = addNormBoundCut(p_cut);
+p_cut = addBilinearVariableCuts(p_cut);
 p_cut = addEvalVariableCuts(p_cut);
 p_cut = addMonomialCuts(p_cut);
-%p_cut = addConvexityCuts(p_cut);
+p_cut = addMonomialTowerCuts(p_cut);
+p_cut = addSinCosCuts(p_cut);
 
 p_cut = mergeBoundsToModel(p_cut);
 if nargin > 1
@@ -105,8 +116,17 @@ else
     if p_cut.K.l > 0
         E = [E,p_cut.F_struc(1+p_cut.K.f:p_cut.K.f + p_cut.K.l,:)*[1;z]>=0];
     end
-    if p_cut.K.s(1) > 0
-        top = 1 + p_cut.K.f + p_cut.K.l;
+    if p_cut.K.q > 0
+        top = 1 + p_cut.K.f + p_cut.K.l ;
+        for i = 1:length(p_cut.K.q)
+            n = p_cut.K.q(i);
+            M = p_cut.F_struc(top:top+n-1,:)*[1;z];
+            E = [E, cone(M)];
+            top = top + n;
+        end
+    end
+    if any(p_cut.K.s)
+        top = 1 + p_cut.K.f + p_cut.K.l + sum(p_cut.K.q);
         for i = 1:length(p_cut.K.s)
             n = p_cut.K.s(i);
             M = p_cut.F_struc(top:top+n^2-1,:)*[1;z];

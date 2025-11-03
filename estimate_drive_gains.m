@@ -130,7 +130,7 @@ elseif strcmp(method, 'PC-OLS')
                                     eye(26) ]*[pi_b; pi_d];
 
     % Feasibility contrraints of the link paramteres and rotor inertia
-    cnstr = [drv_gns(1)>10]; % strong constraint on minimum value of K1
+    cnstr = [drv_gns(1)>=10]; % strong constraint on minimum value of K1
     for i = 1:11:66
         link_inertia_i = [pii(i), pii(i+1), pii(i+2); ...
                           pii(i+1), pii(i+3), pii(i+4); ...
@@ -139,7 +139,7 @@ elseif strcmp(method, 'PC-OLS')
         frst_mmnt_i = vec2skewSymMat(pii(i+6:i+8));
 
         Di = [link_inertia_i, frst_mmnt_i'; frst_mmnt_i, pii(i+9)*eye(3)];
-        cnstr = [cnstr, Di>0, pii(i+10)>0];
+        cnstr = [cnstr, Di>=0, pii(i+10)>=0];
     end
 
     % Feasibility constraints on the load paramters
@@ -149,11 +149,11 @@ elseif strcmp(method, 'PC-OLS')
     load_frst_mmnt = vec2skewSymMat(pi_load_unknw(7:9));    
     Dl = [load_inertia, load_frst_mmnt'; load_frst_mmnt, m_load*eye(3)];
 
-    cnstr = [cnstr, Dl>0];
+    cnstr = [cnstr, Dl>=0];
 
     % Feasibility constraints on the friction prameters 
     for i = 1:6
-       cnstr = [cnstr, pi_frctn(3*i-2)>0, pi_frctn(3*i-1)>0];  
+       cnstr = [cnstr, pi_frctn(3*i-2)>=0, pi_frctn(3*i-1)>=0];  
     end
 
     % Defining objective function
