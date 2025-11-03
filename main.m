@@ -1,10 +1,10 @@
 clear all; close all; clc;
 
 % Define path to a urdf file
-% path_to_urdf = 'urdf\fixed_bipedal.urdf';
-path_to_urdf = 'ur10e.urdf';
-
-dof = 6;
+path_to_urdf = 'urdf\fixed_bipedal.urdf';
+dof = 10;
+% path_to_urdf = 'ur10e.urdf';
+% dof = 6;
 addpath(genpath("C:\Users\polly\v1\dynamic_calibration_10"));
 
 % Generate functions for dynamics based on Lagrange method

@@ -128,7 +128,8 @@ for i = 1:dof
     beta_P(i,:) = [sym(zeros(1,6)), g_kk(:,i+1)',...
                    g_kk(:,i+1)'*p_kk(:,i+1)];
 end
-
+fprintf('beta_K is %d x %d\n', size(beta_K,1), size(beta_K,2));
+fprintf('beta_P is %d x %d\n', size(beta_P,1), size(beta_P,2));
 
 % ---------------------------------------------------------------------
 % Dynamic regressor of the full paramters
@@ -137,7 +138,7 @@ beta_Lf = [];
 for k = 1:dof
     beta_Lf = [beta_Lf , beta_K(k,:) - beta_P(k,:)];
 end
-disp("finish beta_LF");
+fprintf('beta_Lf is %d x %d\n', size(beta_Lf,1), size(beta_Lf,2));
 
 % beta_Lf = [beta_K(1,:) - beta_P(1,:), beta_K(2,:) - beta_P(2,:),...
 %          beta_K(3,:) - beta_P(3,:), beta_K(4,:) - beta_P(4,:),...
@@ -152,7 +153,8 @@ for i = 1:dof
              diff(dbetaLf_dqd, qd_sym(i)) * q2d_sym(i);
 end
 Y_f = tf - dbetaLf_dq;
-disp("finish Y_f");
+fprintf('Y_f is %d x %d\n', size(Y_f,1), size(Y_f,2));
+
 
 
 % eval_handle = @(q,qd,q2d) double( subs( Y_f, ...
