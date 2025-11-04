@@ -12,9 +12,12 @@
 % parameters into a file.
 % ---------------------------------------------------------------------
 % get robot description
-path_to_urdf = 'urdf/fixed_bipedal.urdf';
-dof = 10;
-ur10 = parse_urdf(path_to_urdf);
+% path_to_urdf = 'urdf/fixed_bipedal.urdf';
+% dof = 10;
+
+path_to_urdf = 'ur10e.urdf';
+dof = 6;
+ur10 = parse_urdf(path_to_urdf, dof);
 
 % get mapping from full parameters to base parameters
 include_motor_dynamics = 1;

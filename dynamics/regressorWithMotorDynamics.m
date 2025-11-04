@@ -8,7 +8,7 @@ function Y = regressorWithMotorDynamics(q,qd,q2d, dof)
 % ----------------------------------------------------------------------
 if size(q,1)==dof && size(q,2)==1 && size(qd,1)==dof && size(qd,2)==1 ...
         && size(q2d,1)==dof && size(q2d,2)==1
-    Y_rgd_bdy = standard_regressor_UR10E(q,qd,q2d, dof);
+    Y_rgd_bdy = standard_regressor_UR10E(q,qd,q2d);
     Y_mtrs = diag(q2d);
     Y = zeros(dof, 11*dof, 'like', Y_rgd_bdy);
     for k = 1:dof
