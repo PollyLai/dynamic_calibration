@@ -1,4 +1,4 @@
-function test_base_params()
+function test_base_params(dof)
 % ---------------------------------------------------------------------
 % Test if base parameters are found correctly by comparing
 % torque prediction of the model with standard parameters with 
@@ -7,7 +7,7 @@ function test_base_params()
 
 path_to_urdf = 'ur10e.urdf';
 ur10 = parse_urdf(path_to_urdf);
-no_links = 6;
+no_links = dof;
 
 % Perform QR decompostions
 include_motor_dynamics = 1;

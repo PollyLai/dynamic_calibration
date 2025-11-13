@@ -22,8 +22,8 @@ dof = 10;
 
 
 % % Run tests
-test_rb_inverse_dynamics()
-test_base_params()
+test_rb_inverse_dynamics(dof)
+test_base_params(dof)
 % 
 % 
 % % Perform QR decompostion in order to get base parameters of the robot
