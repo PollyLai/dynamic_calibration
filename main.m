@@ -5,16 +5,16 @@ clear all; close all; clc;
 addpath(genpath("C:\Users\polly\v1\dynamic_calibration_10"));
 % path_to_urdf = 'urdf\fixed_bipedal.urdf';
 % addpath(genpath('/home/ldsc/matlab_10/dynamic_calibration'));
-path_to_urdf = 'test_inverted_final.urdf';
-dof = 6;
+path_to_urdf = 'fixed_bipedal.urdf';
+dof = 10;
 % path_to_urdf = 'ur10e.urdf';
 % dof = 6;
 
 
 % Generate functions for dynamics based on Lagrange method
 % Note that it might take some time
-% generate_rb_dynamics(path_to_urdf, dof);
-% generate_friction_eq();
+generate_rb_dynamics(path_to_urdf, dof);
+generate_friction_eq();
 
 
 % Generate regressors for inverse dynamics of the robot, friction and load
