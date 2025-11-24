@@ -1,0 +1,307 @@
+<?xml version="1.0" ?>
+<robot name="test_inverted_10" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <link name="base_link">
+    <inertial>
+      <origin xyz="-0.019087675935812218 0.09999915136451387 -0.5831036203822739" rpy="0 0 0"/>
+      <mass value="0.1444156499617652"/>
+      <inertia ixx="8.1e-05" iyy="0.000251" izz="0.000324" ixy="-0.0" iyz="-0.0" ixz="5e-06"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="r_hip_yaw_1">
+    <inertial>
+      <origin xyz="0.044592208230001894 3.355093980417223e-13 -0.0016473322955735462" rpy="0 0 0"/>
+      <mass value="0.8119924047866209"/>
+      <inertia ixx="0.00056" iyy="0.000609" izz="0.000712" ixy="0.0" iyz="-0.0" ixz="-2e-06"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.04236 0.049 0.005" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/r_hip_yaw_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin xyz="0.04236 0.049 0.005" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/r_hip_yaw_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="r_hip_pitch_1">
+    <inertial>
+      <origin xyz="-1.714095707243228e-07 -0.0022492126491534675 -0.03225000047076376" rpy="0 0 0"/>
+      <mass value="0.09382009482644298"/>
+      <inertia ixx="0.000168" iyy="0.000137" izz="0.000133" ixy="-0.0" iyz="-5e-06" ixz="-0.0"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.00214 0.049 0.0465" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/r_hip_pitch_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin xyz="-0.00214 0.049 0.0465" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/r_hip_pitch_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="r_thigh_1">
+    <inertial>
+      <origin xyz="0.015452605166383002 -0.013327472395499751 -0.054168951355970524" rpy="0 0 0"/>
+      <mass value="2.4192276462424758"/>
+      <inertia ixx="0.01249" iyy="0.010396" izz="0.006309" ixy="0.000154" iyz="-0.000601" ixz="0.002029"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.00214 0.081 0.1015" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/r_thigh_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin xyz="-0.00214 0.081 0.1015" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/r_thigh_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="r_ankle_1">
+    <inertial>
+      <origin xyz="-3.5214549278309026e-07 5.132005931329786e-14 -3.6316462526109206e-07" rpy="0 0 0"/>
+      <mass value="0.0017857987414545333"/>
+      <inertia ixx="5e-06" iyy="5e-06" izz="5e-06" ixy="0.0" iyz="0.0" ixz="-0.0"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.011893 0.1 0.561081" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/r_ankle_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin xyz="0.011893 0.1 0.561081" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/r_ankle_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="l_ankle_1">
+    <inertial>
+      <origin xyz="-0.007800352145194699 1.1592786870739946e-07 -3.6316462592722587e-07" rpy="0 0 0"/>
+      <mass value="0.0017857987414545656"/>
+      <inertia ixx="5e-06" iyy="5e-06" izz="5e-06" ixy="0.0" iyz="0.0" ixz="-0.0"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.004093 -0.099999 0.561081" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/l_ankle_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin xyz="0.004093 -0.099999 0.561081" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/l_ankle_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="l_shank_1">
+    <inertial>
+      <origin xyz="0.047753570856348404 0.007799532874524839 0.16221228128872112" rpy="0 0 0"/>
+      <mass value="0.21284837581671107"/>
+      <inertia ixx="0.001435" iyy="0.001566" izz="0.000187" ixy="0.0" iyz="0.0" ixz="-0.000442"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.011893 -0.092199 0.561081" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/l_shank_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin xyz="0.011893 -0.092199 0.561081" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/l_shank_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="l_thigh_1">
+    <inertial>
+      <origin xyz="-0.038479394832983335 0.043327472394746 0.15911804863560236" rpy="0 0 0"/>
+      <mass value="2.4192276463978106"/>
+      <inertia ixx="0.01249" iyy="0.010396" izz="0.006309" ixy="-0.000154" iyz="0.000601" ixz="0.002029"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.056072 -0.051 0.314787" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/l_thigh_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin xyz="-0.056072 -0.051 0.314787" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/l_thigh_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="l_hip_pitch_1">
+    <inertial>
+      <origin xyz="-1.7140929809648237e-07 -0.029750787350848865 0.0227499995293427" rpy="0 0 0"/>
+      <mass value="0.09382009482644237"/>
+      <inertia ixx="0.000168" iyy="0.000137" izz="0.000133" ixy="0.0" iyz="5e-06" ixz="0.0"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.00214 -0.081 0.1015" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/l_hip_pitch_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin xyz="-0.00214 -0.081 0.1015" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/l_hip_pitch_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="l_hip_yaw_1">
+    <inertial>
+      <origin xyz="9.220823027462693e-05 -3.4167807472229583e-13 0.039852667704426546" rpy="0 0 0"/>
+      <mass value="0.8119924047866205"/>
+      <inertia ixx="0.00056" iyy="0.000609" izz="0.000712" ixy="-0.0" iyz="0.0" ixz="-2e-06"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.00214 -0.049 0.0465" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/l_hip_yaw_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin xyz="-0.00214 -0.049 0.0465" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/l_hip_yaw_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="bipedal_floating_1">
+    <inertial>
+      <origin xyz="0.013224241969873977 -0.04900000000341284 0.004430089785499109" rpy="0 0 0"/>
+      <mass value="1.1534250755587985"/>
+      <inertia ixx="0.00373" iyy="0.003678" izz="0.006137" ixy="-0.0" iyz="-0.0" ixz="-0.000116"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.04236 -0.049 0.005" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/bipedal_floating_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin xyz="0.04236 -0.049 0.005" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/bipedal_floating_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="R_Hip_Roll" type="continuous">
+    <origin xyz="0.0 -0.098 0.0" rpy="0 0 0"/>
+    <parent link="bipedal_floating_1"/>
+    <child link="r_hip_yaw_1"/>
+    <axis xyz="1.0 0.0 0.0"/>
+  </joint>
+
+  <joint name="R_Hip_Yaw" type="continuous">
+    <origin xyz="0.0445 0.0 -0.0415" rpy="0 0 0"/>
+    <parent link="r_hip_yaw_1"/>
+    <child link="r_hip_pitch_1"/>
+    <axis xyz="0.0 0.0 1.0"/>
+  </joint>
+
+  <joint name="R_Hip_Pitch" type="continuous">
+    <origin xyz="0.0 -0.032 -0.055" rpy="0 0 0"/>
+    <parent link="r_hip_pitch_1"/>
+    <child link="r_thigh_1"/>
+    <axis xyz="0.0 1.0 0.0"/>
+  </joint>
+
+  <joint name="R_Knee_Pitch" type="continuous">
+    <origin xyz="0.053932 -0.019 -0.213287" rpy="0 0 0"/>
+    <parent link="r_thigh_1"/>
+    <child link="r_shank_1"/>
+    <axis xyz="0.0 1.0 0.0"/>
+  </joint>
+
+
+
+  <joint name="L_Ankle_Roll" type="continuous">
+    <origin xyz="-0.004093 0.099999 -0.561081" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="l_ankle_1"/>
+    <axis xyz="1.0 0.0 0.0"/>
+  </joint>
+
+  <joint name="L_Ankle_Pitch" type="continuous">
+    <origin xyz="-0.0078 -0.0078 0.0" rpy="0 0 0"/>
+    <parent link="l_ankle_1"/>
+    <child link="l_shank_1"/>
+    <axis xyz="0.0 1.0 0.0"/>
+  </joint>
+
+  <joint name="L_Knee_Pitch" type="continuous">
+    <origin xyz="0.067965 -0.041199 0.246294" rpy="0 0 0"/>
+    <parent link="l_shank_1"/>
+    <child link="l_thigh_1"/>
+    <axis xyz="0.0 1.0 0.0"/>
+  </joint>
+
+  <joint name="L_Hip_Pitch" type="continuous">
+    <origin xyz="-0.053932 0.03 0.213287" rpy="0 0 0"/>
+    <parent link="l_thigh_1"/>
+    <child link="l_hip_pitch_1"/>
+    <axis xyz="0.0 1.0 0.0"/>
+  </joint>
+
+  <joint name="L_Hip_Yaw" type="continuous">
+    <origin xyz="0.0 -0.032 0.055" rpy="0 0 0"/>
+    <parent link="l_hip_pitch_1"/>
+    <child link="l_hip_yaw_1"/>
+    <axis xyz="0.0 0.0 1.0"/>
+  </joint>
+
+  <joint name="L_Hip_Roll" type="continuous">
+    <origin xyz="-0.0445 0.0 0.0415" rpy="0 0 0"/>
+    <parent link="l_hip_yaw_1"/>
+    <child link="bipedal_floating_1"/>
+    <axis xyz="1.0 0.0 0.0"/>
+  </joint>
+
+</robot>

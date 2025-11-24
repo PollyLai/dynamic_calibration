@@ -5,7 +5,7 @@ clear all; close all; clc;
 addpath(genpath("C:\Users\polly\v1\dynamic_calibration_10"));
 % path_to_urdf = 'urdf\fixed_bipedal.urdf';
 % addpath(genpath('/home/ldsc/matlab_10/dynamic_calibration'));
-path_to_urdf = 'fixed_bipedal.urdf';
+path_to_urdf = 'test_inverted_10_no_fixed.urdf';
 dof = 10;
 % path_to_urdf = 'ur10e.urdf';
 % dof = 6;

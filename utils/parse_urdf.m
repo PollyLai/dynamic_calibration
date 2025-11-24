@@ -6,7 +6,7 @@ robot = xml2struct(file);
 % robot.robot.joint = {robot.robot.joint};
 % Extracting parameters of the robot
 for i = 1:dof
-    % disp(i);
+    disp(i);
     % axis of rotation of a joint i in coordinate system of joint i    
     axis_of_rot = str2num(robot.robot.joint{i}.axis.Attributes.xyz)';
     % mass of link (i+1) because joint i rotates link (i+1) as the numbering of
@@ -28,7 +28,7 @@ for i = 1:dof
     link_inertia = [ixx, ixy, ixz; ixy, iyy iyz; ixz, iyz, izz];
     % manipulator regressor                               
     robot.m(i) = link_mass;
-    % disp(robot.m(i));
+    disp(robot.m(i));
     robot.k(:,i) = axis_of_rot;
     robot.r_com(:,i) = com_pos;
     robot.I(:,:,i) = link_inertia;
