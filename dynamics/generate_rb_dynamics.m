@@ -5,7 +5,7 @@ function generate_rb_dynamics(path_to_urdf, dof)
 % ----------------------------------------------------------------------
 
 % Parse urdf to get robot description
-ur10 = parse_urdf(path_to_urdf);
+ur10 = parse_urdf(path_to_urdf, dof);
 
 % Create symbolic generilized coordiates, their first and second deriatives
 q_sym = sym('q%d',[dof,1],'real');
@@ -49,14 +49,14 @@ for i = 1:dof
     beta_P(i,:) = [sym(zeros(1,6)), g_kk(:,i+1)',...
                    g_kk(:,i+1)'*p_kk(:,i+1)];
 end
-fprintf('beta_K is %d x %d\n', size(beta_K,1), size(beta_K,2));
-fprintf('beta_P is %d x %d\n', size(beta_P,1), size(beta_P,2));
+% fprintf('beta_K is %d x %d\n', size(beta_K,1), size(beta_K,2));
+% fprintf('beta_P is %d x %d\n', size(beta_P,1), size(beta_P,2));
 
 beta_Lf = [];
 for i = 1:dof
     beta_Lf = [beta_Lf, beta_K(i,:) - beta_P(i,:)];
 end
-fprintf('beta_Lf is %d x %d\n', size(beta_Lf,1), size(beta_Lf,2));
+% fprintf('beta_Lf is %d x %d\n', size(beta_Lf,1), size(beta_Lf,2));
 
 % beta_Lf = [beta_K(1,:) - beta_P(1,:), beta_K(2,:) - beta_P(2,:),...
 %          beta_K(3,:) - beta_P(3,:), beta_K(4,:) - beta_P(4,:),...
@@ -70,7 +70,7 @@ for i = 1:dof
     P = [P, beta_P(i,:)];
 end
 P = P * pi_sndrd_sym;
-fprintf('P is %d x %d\n', size(P,1), size(P,2));
+% fprintf('P is %d x %d\n', size(P,1), size(P,2));
 % P = [beta_P(1,:), beta_P(2,:), beta_P(3,:), beta_P(4,:),...
 %      beta_P(5,:), beta_P(6,:)]*pi_sndrd_sym; % Potential energy
  

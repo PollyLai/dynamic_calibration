@@ -1,13 +1,15 @@
 clear all; close all; clc;
 
-addpath(genpath('/home/ldsc/matlab_10/dynamic_calibration'));
+
 % Define path to a urdf file
+addpath(genpath("C:\Users\polly\v1\dynamic_calibration_10"));
 % path_to_urdf = 'urdf\fixed_bipedal.urdf';
-path_to_urdf = 'urdf/fixed_bipedal.urdf';
-dof = 10;
+% addpath(genpath('/home/ldsc/matlab_10/dynamic_calibration'));
+path_to_urdf = 'test_inverted_final.urdf';
+dof = 6;
 % path_to_urdf = 'ur10e.urdf';
 % dof = 6;
-% addpath(genpath("C:\Users\polly\v1\dynamic_calibration_10"));
+
 
 % Generate functions for dynamics based on Lagrange method
 % Note that it might take some time
@@ -22,8 +24,8 @@ dof = 10;
 
 
 % % Run tests
-test_rb_inverse_dynamics(dof)
-test_base_params(dof)
+test_rb_inverse_dynamics(path_to_urdf, dof)
+test_base_params(path_to_urdf, dof)
 % 
 % 
 % % Perform QR decompostion in order to get base parameters of the robot

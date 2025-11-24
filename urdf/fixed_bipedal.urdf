@@ -19,56 +19,56 @@
     <origin xyz="-0.1483434 -0.019 0.162463 " rpy="0. -0.7400002 -0.0000002"/>
     <parent link="bipedal_floating_l_thigh_1"/>
     <child link="bipedal_floating_l_hip_pitch_1"/>
-    <axis xyz="0. 1. 0."/>
+    <axis xyz="0 1 0"/>
     <limit lower="-1.0471976" upper="0.5235988" effort="15." velocity="44.9999997"/>
   </joint>
   <joint name="L_Hip_Roll" type="revolute">
     <origin xyz="-0.007 -0. 0.0415" rpy="0. -0. -0."/>
     <parent link="bipedal_floating_l_hip_yaw_1"/>
     <child link="bipedal_floating_base_link"/>
-    <axis xyz="1. 0. 0."/>
+    <axis xyz="1 0 0"/>
     <limit lower="-0.523599" upper="0.523599" effort="15." velocity="44.9999997"/>
   </joint>
   <joint name="L_Hip_Yaw" type="revolute">
     <origin xyz="0.0198889 -0.032 0.051278 " rpy="0.0000001 0.3699999 0. "/>
     <parent link="bipedal_floating_l_hip_pitch_1"/>
     <child link="bipedal_floating_l_hip_yaw_1"/>
-    <axis xyz="0. 0. 1."/>
+    <axis xyz="0 0 1"/>
     <limit lower="-0.523599" upper="0.523599" effort="15." velocity="44.9999997"/>
   </joint>
   <joint name="L_Knee_Pitch" type="revolute">
     <origin xyz="0.0923703 -0. 0.2382184" rpy="0. 0.3699057 -0. "/>
     <parent link="bipedal_floating_l_shank_1"/>
     <child link="bipedal_floating_l_thigh_1"/>
-    <axis xyz="0. 1. 0."/>
+    <axis xyz="0 1 0"/>
     <limit lower="-0.6981317" upper="0.5235988" effort="15." velocity="44.9999997"/>
   </joint>
   <joint name="R_Hip_Pitch" type="revolute">
     <origin xyz="-0. -0.032 -0.055" rpy="0. -0.37 -0. "/>
     <parent link="bipedal_floating_r_hip_pitch_1"/>
     <child link="bipedal_floating_r_thigh_1"/>
-    <axis xyz="0. 1. 0."/>
+    <axis xyz="0 1 0"/>
     <limit lower="-1.0471976" upper="0.5235988" effort="15." velocity="44.9999997"/>
   </joint>
   <joint name="R_Hip_Roll" type="revolute">
     <origin xyz="-0. -0.098 -0.0000001" rpy="0. 0. 0."/>
     <parent link="bipedal_floating_base_link"/>
     <child link="bipedal_floating_r_hip_yaw_1"/>
-    <axis xyz="1. 0. 0."/>
+    <axis xyz="1 0 0"/>
     <limit lower="-0.523599" upper="0.523599" effort="15." velocity="44.9999997"/>
   </joint>
   <joint name="R_Hip_Yaw" type="revolute">
     <origin xyz="0.007 -0. -0.0414999" rpy="-0. -0. -0."/>
     <parent link="bipedal_floating_r_hip_yaw_1"/>
     <child link="bipedal_floating_r_hip_pitch_1"/>
-    <axis xyz="0. 0. 1."/>
+    <axis xyz="0 0 1"/>
     <limit lower="-0.523599" upper="0.523599" effort="15." velocity="44.9999997"/>
   </joint>
   <joint name="R_Knee_Pitch" type="revolute">
     <origin xyz="-0. -0.019 -0.22 " rpy="0. 0.7400001 0. "/>
     <parent link="bipedal_floating_r_thigh_1"/>
     <child link="bipedal_floating_r_shank_1"/>
-    <axis xyz="0. 1. 0."/>
+    <axis xyz="0 1 0"/>
     <limit lower="-0.6981317" upper="0.5235988" effort="15." velocity="44.9999997"/>
   </joint>
   <joint name="FixedJoint" type="fixed">

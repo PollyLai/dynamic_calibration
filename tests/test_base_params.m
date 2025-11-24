@@ -1,17 +1,17 @@
-function test_base_params(dof)
+function test_base_params(path_to_urdf, dof)
 % ---------------------------------------------------------------------
 % Test if base parameters are found correctly by comparing
 % torque prediction of the model with standard parameters with 
 % the torque prediction of the model with base parameters
 % ----------------------------------------------------------------------
 
-path_to_urdf = 'ur10e.urdf';
-ur10 = parse_urdf(path_to_urdf);
+% path_to_urdf = 'ur10e.urdf';
+ur10 = parse_urdf(path_to_urdf, dof);
 no_links = dof;
 
 % Perform QR decompostions
 include_motor_dynamics = 1;
-[~, baseQR] = base_params_qr(include_motor_dynamics);
+[~, baseQR] = base_params_qr(include_motor_dynamics, dof);
 
 bb = baseQR.numberOfBaseParameters;
 E = baseQR.permutationMatrix;
@@ -39,7 +39,7 @@ for i = 1:100
     q2d_rnd = -q2d_max + 2*q2d_max.*rand(6,1);
     
     if includeMotorDynamics
-        Yi = regressorWithMotorDynamics(q_rnd,qd_rnd,q2d_rnd);
+        Yi = regressorWithMotorDynamics(q_rnd,qd_rnd,q2d_rnd, dof);
     else
         Yi = standard_regressor_UR10E(q_rnd,qd_rnd,q2d_rnd);
     end
