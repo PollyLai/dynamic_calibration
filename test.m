@@ -58,7 +58,7 @@
 
 
 %% output_filtered data
-path_to_data = 'ur10_simulation_telemetry_perfect_titleless.csv';     idxs = [1, 1249];
+path_to_data = 'ur10_simulation_telemetry_1222_titleless.csv';     idxs = [1, 998];
 vldtnTrjctry = parseURData(path_to_data, idxs(1), idxs(2));
 vldtnTrjctry = filterData(vldtnTrjctry);
 

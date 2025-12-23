@@ -35,13 +35,10 @@ for i = 1:length(vldtnTrjctry.t)
     end
     Ybi = Yi*baseQR.permutationMatrix(:,1:baseQR.numberOfBaseParameters);
     Yfrctni = frictionRegressor(qdi);
-    W = [W ; [Ybi Yfrctni]];
+      W = [W ; [Ybi Yfrctni]];
     tau_msrd = horzcat(tau_msrd, diag(drvGains)*vldtnTrjctry.i_fltrd(i,:)');
     tau_pred = horzcat(tau_pred, [Ybi Yfrctni]*[pi_b; pi_fr]);
 end
-
-cW = cond(W);
-fprintf('Condition number of W = %.3e\n', cW);
 
 % Calculate relative residual error
 rre = zeros(6,1);
@@ -61,7 +58,6 @@ for i = 1:6
     legend('measured', 'predicted')
     grid on
 end
-
 
 
 

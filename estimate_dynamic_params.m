@@ -1,4 +1,4 @@
-function sol = estimate_dynamic_params(path_to_data, idx, drvGains, baseQR, method)
+function sol = estimate_dynamic_params(path_to_data, dof, idx, drvGains, baseQR, method)
 % -----------------------------------------------------------------------
 % In this script identification of inertial parameters of the UR10E
 % is carried out. Two approaches are implemented: ordinary least squares
@@ -35,7 +35,7 @@ idntfcnTrjctry = filterData(idntfcnTrjctry);
 % -------------------------------------------------------------------
 % Generate Regressors based on data
 % ------------------------------------------------------------------------
-[Tau, Wb] = buildObservationMatrices(idntfcnTrjctry, baseQR, drvGains);
+[Tau, Wb] = buildObservationMatrices(idntfcnTrjctry, baseQR, drvGains, dof);
 
 % ---------------------------------------------------------------------
 % Estimate parameters
@@ -46,7 +46,7 @@ if strcmp(method, 'OLS')
     [sol.pi_b, sol.pi_fr] = ordinaryLeastSquareEstimation(Tau, Wb);
 elseif strcmp(method, 'PC-OLS')
     % Physically consistent OLS using SDP optimization
-    [sol.pi_b, sol.pi_fr, sol.pi_s] = physicallyConsistentEstimation(Tau, Wb, baseQR);
+    [sol.pi_b, sol.pi_fr, sol.pi_s] = physicallyConsistentEstimation(Tau, Wb, baseQR, dof);
 else
     error("Chosen method for dynamic parameter estimation does not exist");
 end
@@ -68,7 +68,7 @@ end
 
 
 % Local unctions
-function [Tau, Wb] = buildObservationMatrices(idntfcnTrjctry, baseQR, drvGains)
+function [Tau, Wb] = buildObservationMatrices(idntfcnTrjctry, baseQR, drvGains, dof)
     % The function builds observation matrix for UR10E
     E1 = baseQR.permutationMatrix(:,1:baseQR.numberOfBaseParameters);
 
@@ -76,7 +76,7 @@ function [Tau, Wb] = buildObservationMatrices(idntfcnTrjctry, baseQR, drvGains)
     for i = 1:1:length(idntfcnTrjctry.t)
          Yi = regressorWithMotorDynamics(idntfcnTrjctry.q(i,:)',...
                                          idntfcnTrjctry.qd_fltrd(i,:)',...
-                                         idntfcnTrjctry.q2d_est(i,:)');
+                                         idntfcnTrjctry.q2d_est(i,:)', dof);
         Yfrctni = frictionRegressor(idntfcnTrjctry.qd_fltrd(i,:)');
         Ybi = [Yi*E1, Yfrctni];
 
@@ -95,21 +95,22 @@ function [pib_OLS, pifrctn_OLS] = ordinaryLeastSquareEstimation(Tau, Wb)
 end
 
 
-function [pib_SDP, pifrctn_SDP, pi_full] = physicallyConsistentEstimation(Tau, Wb, baseQR)
+function [pib_SDP, pifrctn_SDP, pi_full] = physicallyConsistentEstimation(Tau, Wb, baseQR, dof)
     % Function estimation physically consistent parameters
     % Ideally the user can choose between physical consistency and 
     % so called semi-physical consistency, but right now it is hardcoded
+    numberOfDynamic = size(baseQR.permutationMatrix,1)-baseQR.numberOfBaseParameters
     physicalConsistency = 1;
 
     pi_frctn = sdpvar(18,1); % variables for dependent parameters
     pi_b = sdpvar(baseQR.numberOfBaseParameters,1); % variables for base paramters
-    pi_d = sdpvar(26,1); % variables for dependent paramters
+    pi_d = sdpvar(numberOfDynamic,1); % variables for dependent paramters
 
     % Bijective mapping from [pi_b; pi_d] to standard parameters pi
     pii = baseQR.permutationMatrix*[eye(baseQR.numberOfBaseParameters), ...
                                     -baseQR.beta; ...
-                                    zeros(26,baseQR.numberOfBaseParameters), ... 
-                                    eye(26) ]*[pi_b; pi_d];
+                                    zeros(numberOfDynamic,baseQR.numberOfBaseParameters), ... 
+                                    eye(numberOfDynamic) ]*[pi_b; pi_d];
 
     % Feasibility contrraints of the link paramteres and rotor inertia
     mass_indexes = 10:11:66;
@@ -167,6 +168,6 @@ function [pib_SDP, pifrctn_SDP, pi_full] = physicallyConsistentEstimation(Tau, W
 
     pi_full = baseQR.permutationMatrix*[eye(baseQR.numberOfBaseParameters), ...
                                         -baseQR.beta; ...
-                                        zeros(26,baseQR.numberOfBaseParameters), ... 
-                                        eye(26)]*[value(pi_b); value(pi_d)];
+                                        zeros(numberOfDynamic,baseQR.numberOfBaseParameters), ... 
+                                        eye(numberOfDynamic)]*[value(pi_b); value(pi_d)];
 end

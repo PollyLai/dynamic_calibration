@@ -76,7 +76,7 @@ for i = 1:25
         Y = full_regressor_UR10E(q_rnd,qd_rnd,q2d_rnd);
     end
     W = vertcat(W,Y);
-    fprintf("W size = [%d %d], class = %s\n", size(W), class(W));   % Polly
+    % fprintf("W size = [%d %d], class = %s\n", size(W), class(W));   % Polly
 
 end
 

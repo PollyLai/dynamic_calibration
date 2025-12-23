@@ -15,7 +15,7 @@
 % path_to_urdf = 'urdf/fixed_bipedal.urdf';
 % dof = 10;
 
-path_to_urdf = 'test_inverted_final_6.urdf';
+path_to_urdf = 'ur10e.urdf';
 dof = 6;
 ur10 = parse_urdf(path_to_urdf, dof);
 
@@ -65,7 +65,7 @@ if strcmp(optmznAlgorithm, 'patternsearch')
     optns_pttrnSrch.MaxTime = inf;
     optns_pttrnSrch.MaxFunctionEvaluations = 1e+6;
     
-    [x,fval] = patternsearch(@(x)traj_cost_lgr(x,traj_par,baseQR, dof), x0, ...
+    [x,fval] = patternsearch(@(x)traj_cost_lgr(x,traj_par,baseQR), x0, ...
                              A, b, Aeq, beq, lb, ub, ...
                              @(x)traj_cnstr(x,traj_par), optns_pttrnSrch);
 elseif strcmp(optmznAlgorithm, 'ga')
@@ -95,7 +95,7 @@ c_pol = getPolCoeffs(traj_par.T, a, b, traj_par.wf, traj_par.N, traj_par.q0);
 
 out = [traj_par.t', q', qd'];
 hdr = [{'time'}, compose('q%d', 1:dof), compose('q%dd', 1:dof)]; % t, q1..q6, q1d..q6d
-writecell([hdr; num2cell(out)], 'output_csv\traj_bipedal_6.csv');
+writecell([hdr; num2cell(out)], 'output_csv\traj.csv');
 
 
 figure

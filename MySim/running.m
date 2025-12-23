@@ -1,8 +1,11 @@
 %% 0. 環境準備與模型載入 (包含所有錯誤修正)
 close all;
 clc;
+
+% PATH: 1. urdf; 2. telemetry; 3. outdir;  
+path_to_urdf = 'test_inverted_final_6.urdf';
 try
-    robot = importrobot('ur10e.urdf');
+    robot = importrobot(path_to_urdf);
 catch ME
     error('無法載入 URDF 檔案。請確認檔案路徑是否正確。');
 end
@@ -10,7 +13,7 @@ robot.Gravity = [0, 0, -9.81]; % [gx, gy, gz]
 robot.DataFormat = 'row'; 
 
 
-Q_table = readtable("ur10_simulation_telemetry_perfect.csv"); % in radians
+Q_table = readtable("ur10_simulation_telemetry_1222.csv"); % in radians
 numJoints = 6;
 COMPUTE_FULL_C = true;
 outdir = 'output_csv';
@@ -109,7 +112,7 @@ assert(exist('M_mtrx_fcn', 'file')==2, '找不到 M_mtrx_fcn.m');
 assert(exist('G_vctr_fcn', 'file')==2, '找不到 G_vctr_fcn.m');
 hasC = (exist('C_mtrx_fcn', 'file')==2);  %#ok<NASGU> % 目前不畫 C，但可計算以供檢查
 
-robot_parsed = parse_urdf('ur10e.urdf');   % 你提供的 parser（會組好每節的 10 維 π_i）
+robot_parsed = parse_urdf(path_to_urdf, dof);   % 你提供的 parser（會組好每節的 10 維 π_i）
 
 % 組成整條手臂的 60×1 參數向量 pi = [π1; π2; …; π6]
 % 其中 π_i = [Ixx+m(y^2+z^2); Ixy-mxy; Ixz-mxz; Iyy+m(x^2+z^2); Iyz-myz; Izz+m(x^2+y^2); mx; my; mz; m]

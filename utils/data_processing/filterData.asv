@@ -19,10 +19,12 @@ function data = filterData(data)
 % Filtering Velocities
 % ---------------------------------------------------------------------
 % Design filter
+% vel_filt = designfilt('lowpassiir','FilterOrder',5, ...
+%         'HalfPowerFrequency',0.15,'DesignMethod','butter');         % Polly
+
+
 vel_filt = designfilt('lowpassiir','FilterOrder',5, ...
-        'HalfPowerFrequency',0.15,'DesignMethod','butter');         
-
-
+        'HalfPowerFrequency',0.15,'DesignMethod','butter');
 data.qd_fltrd = zeros(size(data.qd));
 for i = 1:6
     data.qd_fltrd(:,i) = filtfilt(vel_filt,data.qd(:,i));
@@ -52,7 +54,7 @@ end
 % ------------------------------------------------------------------------
 % Zeros phase filtering acceleration obtained by finite difference
 curr_filt = designfilt('lowpassiir','FilterOrder',5, ...
-        'HalfPowerFrequency',0.15,'DesignMethod','butter');
+        'HalfPowerFrequency',0.20,'DesignMethod','butter');
 
 for i = 1:6
     data.i_fltrd(:,i) = filtfilt(curr_filt,data.i(:,i));
