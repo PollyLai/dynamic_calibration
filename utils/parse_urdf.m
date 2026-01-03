@@ -42,3 +42,42 @@ for i = 1:dof
     % disp(robot.pi(:,i));
 
 end
+
+% --- 新增：合併第 11 與 12 軸到第 10 軸 ---
+% 1. 取得 Fixed Joints 的位移 (從 URDF 內容中讀取)
+% R_Ankle_Pitch (Joint 11): Shank -> Ankle
+p_10_11 = str2num(robot.robot.joint{11}.origin.Attributes.xyz)'; 
+% R_Ankle_Roll (Joint 12): Ankle -> Foot
+p_11_12 = str2num(robot.robot.joint{12}.origin.Attributes.xyz)'; 
+
+% 2. 取得 Fixed Links 的物理參數 (Link 11 是 l_ankle, Link 12 是 r_ankle, Link 13 是 r_foot)
+% 注意：XML 解析後的索引可能依序為 link{11}, link{12}, link{13}，請根據你的 XML 結構確認
+m11 = str2double(robot.robot.link{11+1}.inertial.mass.Attributes.value);
+r11 = str2num(robot.robot.link{11+1}.inertial.origin.Attributes.xyz)';
+m12 = str2double(robot.robot.link{12+1}.inertial.mass.Attributes.value);
+r12 = str2num(robot.robot.link{12+1}.inertial.origin.Attributes.xyz)';
+
+% 3. 將 m11, m12 的質心座標轉換回第 10 軸座標系 (Link 10 Frame)
+% r_11_in_10 = p_10_11 + r11
+% r_12_in_10 = p_10_11 + p_11_12 + r12
+r11_fixed = p_10_11 + r11;
+r12_fixed = p_10_11 + p_11_12 + r12;
+
+% 4. 更新第 10 軸的質量與質心矩 (Static Moment h = mass * com)
+m10_old = robot.m(10);
+h10_old = robot.h(:,10);
+
+m10_new = m10_old + m11 + m12;
+h10_new = h10_old + m11*r11_fixed + m12*r12_fixed;
+
+% 5. 寫回 robot 結構體
+robot.m(10) = m10_new;
+robot.h(:,10) = h10_new;
+robot.r_com(:,10) = h10_new / m10_new; % 更新後的等效質心
+
+% 6. 更新參數向量 pi (重心項)
+robot.pi(7:10, 10) = [robot.h(:,10); robot.m(10)];
+
+% --- 慣性張量 (I) 的合併 (平行軸定理) ---
+% 如果你也需要鑑定慣性項，需要將 I11, I12 移軸到 Link 10 座標系再相加
+% 但對於「靜態」或「低速」鑑定，質量與質心的合併是最關鍵的。
