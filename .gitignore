@@ -9,3 +9,4 @@ autogen/codegen/
 *.m~
 
 
+autogen/C_mtrx_fcn.m

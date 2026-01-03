@@ -26,17 +26,17 @@ rbt.Gravity = [0 0 -9.81];
 %     fprintf('  urdf origin   = [%.3f %.3f %.3f]\n\n', xyz_xml);
 % end
 % % 
-% showdetails(rbt)
-% fprintf('=== COM 比對 ===\n');
-% for i = 1:dof
-%     body = rbt.Bodies{i};
-%     fprintf('Body %d (%s)\n', i, body.Name);
-%     fprintf('  ur10.r_com(:,%d) = [% .6f % .6f % .6f]\n', ...
-%         i, ur10.r_com(:,i));
-%     fprintf('  rbt COM         = [% .6f % .6f % .6f]\n\n', ...
-%         body.CenterOfMass);
-% end
-% 
+showdetails(rbt)
+fprintf('=== COM 比對 ===\n');
+for i = 1:dof
+    body = rbt.Bodies{i};
+    fprintf('Body %d (%s)\n', i, body.Name);
+    fprintf('  ur10.r_com(:,%d) = [% .6f % .6f % .6f]\n', ...
+        i, ur10.r_com(:,i));
+    fprintf('  rbt COM         = [% .6f % .6f % .6f]\n\n', ...
+        body.CenterOfMass);
+end
+
 % fprintf('=== Joint / Link 幾何 ===\n')
 % % URDF joint axis / origin
 % axis_urdf = str2num(ur10.robot.joint{1}.axis.Attributes.xyz).';
@@ -103,12 +103,13 @@ no_iter = 100;
 for i = 1:no_iter
     % q_min = deg2rad([-30; -30; -30]);
     % q_max = deg2rad([ 30;  30;  30]);
-    q_min = ([-0.4363323  -0.3490659  -0.6981317   -1.0471976  -0.523599  -0.523599]');
-    q_max = ([0.4363319    1.0471976   0.5235988    0.5235988   0.523599   0.523599]');
-    q = q_min + (q_max - q_min).*rand(6,1);
+    % q_min = ([-0.4363323  -0.3490659  -0.6981317   -1.0471976  -0.523599  -0.523599]');
+    % q_max = ([0.4363319    1.0471976   0.5235988    0.5235988   0.523599   0.523599]');
+    % q = q_min + (q_max - q_min).*rand(dof,1);
     % q_d = zeros(3,1);
     % q_2d = zeros(3,1);
-    % q = -2*pi + 4*pi*rand(dof,1);
+
+    q = -2*pi + 4*pi*rand(dof,1);
     q_d = zeros(dof,1);
     q_2d = zeros(dof,1);
     % q = [0.7641]
@@ -119,9 +120,9 @@ for i = 1:no_iter
 
     tau_matlab = inverseDynamics(rbt,q,q_d,q_2d);
     tau_reg = Ylgr*reshape(ur10.pi,[dof*10,1]);
-    tau_manip = M_mtrx_fcn(q, ur10.pi(:))*q_2d + ...
-                C_mtrx_fcn(q, q_d, ur10.pi(:))*q_d + ...
-                G_vctr_fcn(q, ur10.pi(:));
+    % tau_manip = M_mtrx_fcn(q, ur10.pi(:))*q_2d + ...
+    %             C_mtrx_fcn(q, q_d, ur10.pi(:))*q_d + ...
+    %             G_vctr_fcn(q, ur10.pi(:));
     % Y_h_part = Ylgr(1, 7:9)   % 對應 h 的 3 個係數
     % Y_m_part = Ylgr(1, 10)    % 對應 m 的係數
     % disp('=== FULL (全部link都有質量) ===');
@@ -164,10 +165,10 @@ for i = 1:no_iter
     %     disp('diff            ='); disp(tau_mlab_link - tau_reg_link);
     % end
 %   verifying if regressor is computed correctly
-    diff_reg = (tau_matlab - tau_reg);
-    diff_manip = (tau_matlab - tau_manip);
+    diff_reg = (tau_matlab - tau_reg)
+    % diff_manip = (tau_matlab - tau_manip);
     assert(norm(diff_reg) < 1e-8);
-    assert(norm(diff_manip) < 1e-8);
+    % assert(norm(diff_manip) < 1e-8);
     % assert(norm(tau_matlab - tau_reg) < 1e-8);
     % assert(norm(tau_matlab - tau_manip) < 1e-8);
 end

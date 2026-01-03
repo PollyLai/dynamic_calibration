@@ -5,8 +5,11 @@ clear all; close all; clc;
 % addpath(genpath("C:\Users\polly\v1\dynamic_calibration_10"));
 % path_to_urdf = 'urdf\fixed_bipedal.urdf';
 % addpath(genpath('/home/ldsc/matlab_10/dynamic_calibration'));
-path_to_urdf = 'test_inverted_final_6.urdf';
-dof = 6;
+
+path_to_urdf = 'test_inverted_10_revised.urdf';
+dof = 10;
+% path_to_urdf = 'test_inverted_final_6.urdf';
+% dof = 6;
 % path_to_urdf = 'ur10e.urdf';
 % dof = 6;
 
@@ -24,39 +27,39 @@ dof = 6;
 
 
 % % Run tests
-% test_rb_inverse_dynamics(path_to_urdf, dof)
-% test_base_params(path_to_urdf, dof)
+test_rb_inverse_dynamics(path_to_urdf, dof)
+test_base_params(path_to_urdf, dof)
 
 %% 
-
-
-% Perform QR decompostion in order to get base parameters of the robot
-include_motor_dynamics = 1;
-[pi_lgr_base, baseQR] = base_params_qr(include_motor_dynamics, dof);
-
-
-% Estimate drive gains
-% drive_gains = estimate_drive_gains(baseQR, 'PC-OLS');
-% Or use those found in the paper by De Luca
-% drive_gains = [14.87; 13.26; 11.13; 10.62; 11.03; 11.47]; 
-drive_gains = [1; 1; 1; 1; 1; 1]; 
-
-
-% ====================================
-% Estimate dynamic parameters
-path_to_est_data = 'ur10_simulation_telemetry_1223PD_titleless.csv';      idxs = [1, 998];
-% path_to_data = 'ur-20_02_12-40sec_12harm.csv';    idxs = [500, 4460];    
-% path_to_data = 'ur-20_02_05-20sec_8harm.csv';     idxs = [320, 2310];
-% path_to_data = 'ur-20_02_12-50sec_12harm.csv';    idxs = [355, 5090];
-sol = estimate_dynamic_params(path_to_est_data, dof, idxs, ...
-                              drive_gains, baseQR, 'PC-OLS');
-
-
-% Validate estimated parameters
-path_to_val_data = 'ur10_simulation_telemetry_1223PD_titleless.csv';     idxs = [1, 998];
-
-rre = validate_dynamic_params(path_to_val_data, dof, idxs, ...
-                              drive_gains, baseQR, sol.pi_b, sol.pi_fr)
+% 
+% 
+% % Perform QR decompostion in order to get base parameters of the robot
+% include_motor_dynamics = 1;
+% [pi_lgr_base, baseQR] = base_params_qr(include_motor_dynamics, dof);
+% 
+% 
+% % Estimate drive gains
+% % drive_gains = estimate_drive_gains(baseQR, 'PC-OLS');
+% % Or use those found in the paper by De Luca
+% % drive_gains = [14.87; 13.26; 11.13; 10.62; 11.03; 11.47]; 
+% drive_gains = [1; 1; 1; 1; 1; 1]; 
+% 
+% 
+% % ====================================
+% % Estimate dynamic parameters
+% path_to_est_data = 'ur10_simulation_telemetry_1223PD_titleless.csv';      idxs = [1, 998];
+% % path_to_data = 'ur-20_02_12-40sec_12harm.csv';    idxs = [500, 4460];    
+% % path_to_data = 'ur-20_02_05-20sec_8harm.csv';     idxs = [320, 2310];
+% % path_to_data = 'ur-20_02_12-50sec_12harm.csv';    idxs = [355, 5090];
+% sol = estimate_dynamic_params(path_to_est_data, dof, idxs, ...
+%                               drive_gains, baseQR, 'PC-OLS');
+% 
+% 
+% % Validate estimated parameters
+% path_to_val_data = 'ur10_simulation_telemetry_1223PD_titleless.csv';     idxs = [1, 998];
+% 
+% rre = validate_dynamic_params(path_to_val_data, dof, idxs, ...
+%                               drive_gains, baseQR, sol.pi_b, sol.pi_fr)
 % % ===========================================================================
 % 
 % 
